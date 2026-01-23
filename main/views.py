@@ -7,23 +7,17 @@ from LHC_Simulator import SimulationEvent, load_particles
 
 Load_particle = False
 
-test_json = [
-{
-    "id_1": 2212,
-    "id_2": 2212,
-    "Energy": 40,
-}
-]
+
 
 @api_view(['POST'])
 def get_inputs(request):
     global Received_particles
 
-    inputs = json.loads(test_json.body.decode('utf-8'))[0]
+    inputs = json.loads(request.body.decode('utf-8'))[0]
 
     Results = Collide_Simulation(inputs)
 
-    return Results
+    return JsonResponse(Results)
 
 
 def LoadAll():
