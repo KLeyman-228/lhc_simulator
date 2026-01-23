@@ -11,7 +11,6 @@ Load_particle = False
 
 @api_view(['POST'])
 def get_inputs(request):
-    global Received_particles
 
     inputs = json.loads(request.body.decode('utf-8'))[0]
 
