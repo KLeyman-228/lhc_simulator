@@ -26,7 +26,9 @@ def LoadAll():
 
     if Load_particle is False:
         particle_list, resonances = load_particles()
-        Load_particle == True
+        Load_particle = True
+        return particle_list, resonances
+    else:
         return particle_list, resonances
 
 
