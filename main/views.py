@@ -49,7 +49,7 @@ def Collide_Simulation(options):
 
 
     Result = [finals, first_finals, values]
-    print(Result)
+    #print(Result)
     
     return Result
 

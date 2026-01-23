@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-2=-=bbe_ib0o^l7nau6zlui-e(*l++w0e&0ba&17z78*atn0rx
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['server', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['147.45.219.43', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -85,9 +85,9 @@ CORS_ALLOW_HEADERS = [
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # React/Vue dev server
     "http://localhost:8080",  # Альтернативный порт
-    "http://127.0.0.1:3000",
-    "https://mysite.com",
-    "https://www.mysite.com",
+    "http://147.45.219.43",
+    #"https://mysite.com",
+    #"https://www.mysite.com",
 ]
 
 TEMPLATES = [
