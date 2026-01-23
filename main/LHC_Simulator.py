@@ -419,7 +419,10 @@ def generate_event(id1, id2, beam_energy, particles_list, resonances, max_attemp
                 decay_products = [p.item.particle for p in particle.decay_products]
                 decay_products.append(chosen_particles)
 
-                FirstProducts = [chosen_particles.mcid, chosen_resonances.mcid]
+                FirstProducts = [{
+                    "id_1": chosen_particles.mcid,
+                    "id_2": chosen_resonances.mcid
+                }]
                 Products = decay_products
 
                 values = [{

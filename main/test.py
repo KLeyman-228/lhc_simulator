@@ -47,7 +47,8 @@ def Collide_Simulation(options):
 
 
     Result = [finals, first_finals, values]
-    print(Result)
+    with open('Result.json', 'w', encoding='utf-8') as f:
+        json.dump(Result, f, ensure_ascii=False, indent=4)
     
     return Result
 
