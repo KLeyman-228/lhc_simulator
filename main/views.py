@@ -16,7 +16,7 @@ def get_inputs(request):
 
     Results = Collide_Simulation(inputs)
 
-    return JsonResponse(Results)
+    return JsonResponse(Results, safe=False)
 
 
 def LoadAll():
