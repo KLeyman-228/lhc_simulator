@@ -34,7 +34,6 @@ api = pdg.connect()
 
 
 # FUNCTIONS:
-
 def load_particles():
     print("Загрузка частиц из базы...")
     particles, resonance = [], []
@@ -42,11 +41,17 @@ def load_particles():
     for i in api.get_particles():
         for particle in api.get(i.pdgid):
             if (particle.is_baryon or particle.is_meson):
-                (resonance if particle.width and particle.width > 0 
-                 else particles).append(particle) \
-                    if not is_resonance(particle) and not is_antiparticle(particle) else None
+                # Проверяем условия исключения
+                if is_resonance(particle) or is_antiparticle(particle):
+                    continue  # Пропускаем эту частицу
+                
+                # Разделяем по ширине
+                if particle.width and particle.width > 0:
+                    resonance.append(particle)
+                else:
+                    particles.append(particle)
     
-    print(f"Загружено {len(particles)} частиц")
+    print(f"Загружено {len(particles)} частиц, резонансов: {len(resonance)}")
     return particles, resonance
 
 def safe_mass(m):
