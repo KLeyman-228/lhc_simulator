@@ -11,12 +11,37 @@ Load_particle = False
 
 @api_view(['POST'])
 def get_inputs(request):
+    if request.method != "POST":
+        return JsonResponse(
+            {"error": "Only POST allowed"},
+            status=405
+        )
 
-    inputs = json.loads(request.body.decode('utf-8'))[0]
+    try:
+        data = json.loads(request.body.decode("utf-8"))
+    except Exception:
+        return JsonResponse(
+            {"error": "Invalid JSON"},
+            status=400
+        )
 
-    Results = Collide_Simulation(inputs)
+    if not isinstance(data, list) or not data:
+        return JsonResponse(
+            {"error": "Payload must be a non-empty list"},
+            status=400
+        )
 
-    return JsonResponse(Results, safe=False)
+    inputs = data[0]
+
+    try:
+        result = Collide_Simulation(inputs)
+    except Exception as e:
+        return JsonResponse(
+            {"error": str(e)},
+            status=500
+        )
+
+    return JsonResponse(result, safe=False)
 
 
 def LoadAll():
