@@ -134,7 +134,7 @@ def load_particles():
                     continue
                 if particle.mcid is None:
                     continue
-                
+
                 # Кэшируем частицу
                 _particle_cache[particle.mcid] = particle
                 

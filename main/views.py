@@ -43,6 +43,7 @@ def get_inputs(request):
 
     return JsonResponse(result, safe=False)
 
+particle_list = []
 
 def LoadAll():
 
