@@ -267,6 +267,7 @@ def check_conservation(particles, initial_state, sqrt_s):
     return True
 
 
+
 def is_valid_final_state(particles):
     """Проверка что все частицы - барионы или мезоны"""
     return all(p.is_baryon or p.is_meson for p in particles)
