@@ -115,18 +115,18 @@ def get_quark_number(mcid, quark):
 
 def load_particles():
     """Быстрая загрузка частиц из базы данных"""
-    print("⏳ Загрузка частиц из базы...")
+    print("% Загрузка частиц из базы...")
     particles = []
     resonances = []
     
     # Получаем все частицы одним запросом
     all_pdgids = list(api.get_particles())
     
-    print(f"   Обработка {len(all_pdgids)} записей...")
+    #print(f"   Обработка {len(all_pdgids)} записей...")
     
     for i, pdg_entry in enumerate(all_pdgids):
-        if i % 100 == 0:
-            print(f"   Прогресс: {i}/{len(all_pdgids)}", end='\r')
+        #if i % 100 == 0:
+            #print(f"   Прогресс: {i}/{len(all_pdgids)}", end='\r')
         
         try:
             for particle in api.get(pdg_entry.pdgid):
@@ -146,7 +146,7 @@ def load_particles():
         except:
             continue
     
-    print(f"\n✓ Загружено {len(particles)} частиц, {len(resonances)} резонансов")
+    print(f"\n$ Загружено {len(particles)} частиц, {len(resonances)} резонансов")
     return particles, resonances
 
 

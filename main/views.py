@@ -5,8 +5,10 @@ from django.http import JsonResponse
 from .LHC_Simulator import SimulationEvent, load_particles
 
 
+# Глобальные переменные
 Load_particle = False
-
+particle_list = []
+resonances = []  # ← Добавь эту переменную!
 
 
 @api_view(['POST'])
@@ -19,9 +21,9 @@ def get_inputs(request):
 
     try:
         data = json.loads(request.body.decode("utf-8"))
-    except Exception:
+    except Exception as e:
         return JsonResponse(
-            {"error": "Invalid JSON"},
+            {"error": f"Invalid JSON: {str(e)}"},
             status=400
         )
 
@@ -43,72 +45,45 @@ def get_inputs(request):
 
     return JsonResponse(result, safe=False)
 
-particle_list = []
 
 def LoadAll():
-
-    global Load_particle
-
+    """Загрузка частиц (один раз)"""
+    
+    global Load_particle, particle_list, resonances  # ← ВАЖНО! Объяви все глобальные переменные
+    
     if Load_particle is False:
+        # Загружаем частицы
         particle_list, resonances = load_particles()
         Load_particle = True
-        return particle_list, resonances
-    else:
-        return particle_list, resonances
-
+    
+    return particle_list, resonances
 
 
 def Collide_Simulation(options):
-
-    particle_list, resonances = LoadAll()
-
-    id_1 = options['id_1']
-    id_2 = options['id_2']
-    E = options['Energy']
-
-    finals, first_finals, values = SimulationEvent(id_1, id_2, E, particle_list, resonances)
-
-
-    Result = [finals, first_finals, values]
-    #print(Result)
+    """Симуляция столкновения"""
     
-    return Result
-
-
-
-
-"""
-JSON:
-[
-{
-    "id_1": 2212,
-    "id_2": 2212,
-    "Energy": 40,
-}
-]
-
-
-JSON:
-[
-Первая ступень:
-{
-    "id_1": 2212,
-    "id_2": 2212,
-}
-Распад:
-{
-    "id_1": 2212,
-    "id_2": 2212,
-    "id_3": 2212,
-    ...
-}
-Значения:
-{
-    "Mass": 12.678,
-    "BaryonNum": 2,
-    "S,B,C": [0, 0, 1],
-    "Charge": "+2",
-
-}
-]
-"""
+    # Загружаем частицы (если еще не загружены)
+    particle_list, resonances = LoadAll()
+    
+    # Получаем параметры
+    id_1 = options.get('id_1')
+    id_2 = options.get('id_2')
+    E = options.get('Energy')
+    
+    # Проверка входных данных
+    if id_1 is None or id_2 is None or E is None:
+        raise ValueError("Missing required parameters: id_1, id_2, Energy")
+    
+    # Симуляция
+    finals, first_finals, values = SimulationEvent(
+        id_1, id_2, E, particle_list, resonances
+    )
+    
+    # Формируем результат
+    result = [
+        finals,
+        first_finals,
+        values
+    ]
+    
+    return result
