@@ -37,25 +37,24 @@ MAX_MASS_FRACTION = 0.7
 # УТИЛИТЫ (с кэшированием)
 # ============================================================================
 
-@lru_cache(maxsize=10000)
-def safe_mass(p):
-    """Кэшированное получение массы по mcid"""
+@lru_cache(maxsize=1000)
+def safe_mass(mcid):
     try:
+        p = api.get_particle_by_mcid(mcid)
         return p.mass if p.mass is not None else 0.0
     except:
         return 0.0
 
-
-@lru_cache(maxsize=10000)
-def safe_charge(p):
-    """Кэшированное получение заряда по mcid"""
+@lru_cache(maxsize=1000)
+def safe_charge(mcid):
     try:
+        p = api.get_particle_by_mcid(mcid)
         return p.charge
     except:
         return 0
 
 
-@lru_cache(maxsize=10000)
+@lru_cache(maxsize=1000)
 def get_particle_quarks(mcid):
     """Кэшированное получение кварков частицы"""
     try:
@@ -65,7 +64,7 @@ def get_particle_quarks(mcid):
         return ""
 
 
-@lru_cache(maxsize=10000)
+@lru_cache(maxsize=1000)
 def is_resonance(name):
     """Проверка является ли частица резонансом"""
     if '(' in name and ')' in name:
@@ -77,7 +76,7 @@ def is_resonance(name):
     return any(marker in name for marker in resonance_markers)
 
 
-@lru_cache(maxsize=10000)
+@lru_cache(maxsize=1000)
 def get_baryon_number(mcid):
     """Вычисление барионного числа с кэшированием"""
     try:
@@ -88,7 +87,7 @@ def get_baryon_number(mcid):
         return 0
 
 
-@lru_cache(maxsize=50000)
+@lru_cache(maxsize=1000)
 def get_quark_number(mcid, quark):
     """Вычисление квантового числа для кварка с кэшированием"""
     try:
@@ -245,8 +244,8 @@ def check_conservation(particles, initial_state, sqrt_s):
     
     for particle in particles:
         mcid = particle.mcid
-        total_mass += safe_mass(particle)
-        final_state['charge'] += safe_charge(particle)
+        total_mass += safe_mass(mcid)
+        final_state['charge'] += safe_charge(mcid)
         final_state['baryon'] += get_baryon_number(mcid)
         final_state['strangeness'] += get_quark_number(mcid, 's')
         final_state['charm'] += get_quark_number(mcid, 'c')
@@ -279,17 +278,17 @@ def generate_event(id1, id2, beam_energy, particles_list, resonances, max_attemp
         print("❌ ОШИБКА: Пустые списки частиц или резонансов")
         return None
     
-    A = api.get_particle_by_mcid(id1)
-    B = api.get_particle_by_mcid(id2)
+    #A = api.get_particle_by_mcid(id1)
+    #B = api.get_particle_by_mcid(id2)
     # Вычисляем энергию центра масс
-    m1 = safe_mass(A)
-    m2 = safe_mass(B)
+    m1 = safe_mass(id1)
+    m2 = safe_mass(id2)
     s = m1**2 + m2**2 + 2 * m2 * beam_energy
     sqrt_s = sqrt(max(0.1, s))
     
     # Квантовые числа начального состояния
     initial_state = {
-        'charge': safe_charge(A) + safe_charge(B),
+        'charge': safe_charge(id1) + safe_charge(id2),
         'baryon': get_baryon_number(id1) + get_baryon_number(id2),
         'strangeness': get_quark_number(id1, 's') + get_quark_number(id2, 's'),
         'charm': get_quark_number(id1, 'c') + get_quark_number(id2, 'c'),
@@ -297,7 +296,7 @@ def generate_event(id1, id2, beam_energy, particles_list, resonances, max_attemp
     }
     
     # ОПТИМИЗАЦИЯ: предфильтруем резонансы по массе
-    valid_resonances = [r for r in resonances if safe_mass(r) < sqrt_s * 0.8]
+    valid_resonances = [r for r in resonances if safe_mass(r.mcid) < sqrt_s * 0.8]
     
     if not valid_resonances:
         print(f"⚠️  Нет подходящих резонансов для энергии {sqrt_s:.2f} ГэВ")
@@ -309,8 +308,8 @@ def generate_event(id1, id2, beam_energy, particles_list, resonances, max_attemp
     successful_attempts = 0
     
     for attempt in range(max_attempts):
-        if attempt % 10000 == 0 and attempt > 0:
-            print(f"   Попытка {attempt}/{max_attempts} (успешных проверок: {successful_attempts})", end='\r')
+        #if attempt % 10000 == 0 and attempt > 0:
+            #print(f"   Попытка {attempt}/{max_attempts} (успешных проверок: {successful_attempts})", end='\r')
         
         try:
             # Выбираем случайные частицу и резонанс
@@ -365,6 +364,7 @@ def generate_event(id1, id2, beam_energy, particles_list, resonances, max_attemp
                     continue
         
         except Exception as e:
+            print(e)
             continue
     
     print(f"\n❌ Событие не найдено после {max_attempts} попыток")
