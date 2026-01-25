@@ -38,21 +38,19 @@ MAX_MASS_FRACTION = 0.7
 # ============================================================================
 
 @lru_cache(maxsize=10000)
-def safe_mass(mcid):
+def safe_mass(p):
     """Кэшированное получение массы по mcid"""
     try:
-        particle = api.get_particle_by_mcid(mcid)
-        return particle.mass if particle.mass is not None else 0.0
+        return p.mass if p.mass is not None else 0.0
     except:
         return 0.0
 
 
 @lru_cache(maxsize=10000)
-def safe_charge(mcid):
+def safe_charge(p):
     """Кэшированное получение заряда по mcid"""
     try:
-        particle = api.get_particle_by_mcid(mcid)
-        return particle.charge
+        return p.charge
     except:
         return 0
 
@@ -247,8 +245,8 @@ def check_conservation(particles, initial_state, sqrt_s):
     
     for particle in particles:
         mcid = particle.mcid
-        total_mass += safe_mass(mcid)
-        final_state['charge'] += safe_charge(mcid)
+        total_mass += safe_mass(particle)
+        final_state['charge'] += safe_charge(particle)
         final_state['baryon'] += get_baryon_number(mcid)
         final_state['strangeness'] += get_quark_number(mcid, 's')
         final_state['charm'] += get_quark_number(mcid, 'c')
@@ -273,9 +271,6 @@ def is_valid_final_state(particles):
     return all(p.is_baryon or p.is_meson for p in particles)
 
 
-# ============================================================================
-# ГЕНЕРАЦИЯ СОБЫТИЙ (ИСПРАВЛЕНО И ОПТИМИЗИРОВАНО)
-# ============================================================================
 
 def generate_event(id1, id2, beam_energy, particles_list, resonances, max_attempts=100000):
     
@@ -284,16 +279,17 @@ def generate_event(id1, id2, beam_energy, particles_list, resonances, max_attemp
         print("❌ ОШИБКА: Пустые списки частиц или резонансов")
         return None
     
-    
+    A = api.get_particle_by_mcid(id1)
+    B = api.get_particle_by_mcid(id2)
     # Вычисляем энергию центра масс
-    m1 = safe_mass(id1)
-    m2 = safe_mass(id2)
+    m1 = safe_mass(A)
+    m2 = safe_mass(B)
     s = m1**2 + m2**2 + 2 * m2 * beam_energy
     sqrt_s = sqrt(max(0.1, s))
     
     # Квантовые числа начального состояния
     initial_state = {
-        'charge': safe_charge(id1) + safe_charge(id2),
+        'charge': safe_charge(A) + safe_charge(B),
         'baryon': get_baryon_number(id1) + get_baryon_number(id2),
         'strangeness': get_quark_number(id1, 's') + get_quark_number(id2, 's'),
         'charm': get_quark_number(id1, 'c') + get_quark_number(id2, 'c'),
@@ -301,7 +297,7 @@ def generate_event(id1, id2, beam_energy, particles_list, resonances, max_attemp
     }
     
     # ОПТИМИЗАЦИЯ: предфильтруем резонансы по массе
-    valid_resonances = [r for r in resonances if safe_mass(r.mcid) < sqrt_s * 0.8]
+    valid_resonances = [r for r in resonances if safe_mass(r) < sqrt_s * 0.8]
     
     if not valid_resonances:
         print(f"⚠️  Нет подходящих резонансов для энергии {sqrt_s:.2f} ГэВ")
@@ -376,9 +372,7 @@ def generate_event(id1, id2, beam_energy, particles_list, resonances, max_attemp
     return None
 
 
-# ============================================================================
-# ГЛАВНАЯ ФУНКЦИЯ СИМУЛЯЦИИ
-# ============================================================================
+
 
 def SimulationEvent(id_1, id_2, beam_energy, particle_list, resonances):
     """
@@ -428,7 +422,3 @@ def SimulationEvent(id_1, id_2, beam_energy, particle_list, resonances):
         print(f"   - Проверить что списки частиц загружены корректно")
         return None
 
-
-# ============================================================================
-# ПРИМЕР ИСПОЛЬЗОВАНИЯ
-# ============================================================================
