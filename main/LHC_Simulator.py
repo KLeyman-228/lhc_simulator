@@ -37,17 +37,16 @@ MAX_MASS_FRACTION = 0.7
 # ============================================================================
 
 @lru_cache(maxsize=1000)
-def safe_mass(mcid):
+def safe_mass(p):
     try:
-        p = api.get_particle_by_mcid(mcid)
         return p.mass if p.mass is not None else 0.0
     except:
         return 0.0
 
 @lru_cache(maxsize=1000)
-def safe_charge(mcid):
+def safe_charge(p):
     try:
-        p = api.get_particle_by_mcid(mcid)
+        #p = api.get_particle_by_mcid(mcid)
         return p.charge
     except:
         return 0
@@ -165,7 +164,7 @@ def generate_weight(particle, sqrt_s):
     """
     Упрощенное и быстрое вычисление веса
     """
-    m = safe_mass(particle.mcid)
+    m = safe_mass(particle)
     
     # Быстрые фильтры
     if m > sqrt_s * MAX_MASS_FRACTION:
@@ -238,17 +237,23 @@ def check_conservation(particles, initial_state, sqrt_s):
     """
     Быстрая проверка законов сохранения
     """
-    total_mass = 0.0
-    final_state = defaultdict(float)
-    
-    for particle in particles:
-        mcid = particle.mcid
-        total_mass += safe_mass(mcid)
-        final_state['charge'] += safe_charge(mcid)
-        final_state['baryon'] += get_baryon_number(mcid)
-        final_state['strangeness'] += get_quark_number(mcid, 's')
-        final_state['charm'] += get_quark_number(mcid, 'c')
-        final_state['bottom'] += get_quark_number(mcid, 'b')
+    # Создание массивов нужных свойств
+    masses = np.array([safe_mass(p) for p in particles])
+    charges = np.array([safe_charge(p) for p in particles])
+    baryons = np.array([get_baryon_number(p.mcid) for p in particles])
+    strangenesses = np.array([get_quark_number(p.mcid, 's') for p in particles])
+    charms = np.array([get_quark_number(p.mcid, 'c') for p in particles])
+    bottoms = np.array([get_quark_number(p.mcid, 'b') for p in particles])
+
+    # Выполняем суммирование
+    total_mass = np.sum(masses)
+    final_state = {
+        'charge': np.sum(charges),
+        'baryon': np.sum(baryons),
+        'strangeness': np.sum(strangenesses),
+        'charm': np.sum(charms),
+        'bottom': np.sum(bottoms)
+    }
     
     # Кинематика
     if total_mass > sqrt_s * 1.1:
@@ -262,7 +267,19 @@ def check_conservation(particles, initial_state, sqrt_s):
     
     return True
 
-
+"""    total_mass = 0.0
+    final_state = defaultdict(float)
+    total_mass = np.sum([safe_mass(p.mcid) for p in particles])
+    
+    for particle in particles:
+        mcid = particle.mcid
+        total_mass += safe_mass(particle)
+        final_state['charge'] += safe_charge(particle)
+        final_state['baryon'] += get_baryon_number(mcid)
+        final_state['strangeness'] += get_quark_number(mcid, 's')
+        final_state['charm'] += get_quark_number(mcid, 'c')
+        final_state['bottom'] += get_quark_number(mcid, 'b')
+    import numpy as np"""
 
 def is_valid_final_state(particles):
     """Проверка что все частицы - барионы или мезоны"""
@@ -277,17 +294,17 @@ def generate_event(id1, id2, beam_energy, particles_list, resonances, max_attemp
         print("❌ ОШИБКА: Пустые списки частиц или резонансов")
         return None
     
-    #A = api.get_particle_by_mcid(id1)
-    #B = api.get_particle_by_mcid(id2)
+    A = api.get_particle_by_mcid(id1)
+    B = api.get_particle_by_mcid(id2)
     # Вычисляем энергию центра масс
-    m1 = safe_mass(id1)
-    m2 = safe_mass(id2)
+    m1 = safe_mass(A)
+    m2 = safe_mass(B)
     s = m1**2 + m2**2 + 2 * m2 * beam_energy
     sqrt_s = sqrt(max(0.1, s))
     
     # Квантовые числа начального состояния
     initial_state = {
-        'charge': safe_charge(id1) + safe_charge(id2),
+        'charge': safe_charge(A) + safe_charge(B),
         'baryon': get_baryon_number(id1) + get_baryon_number(id2),
         'strangeness': get_quark_number(id1, 's') + get_quark_number(id2, 's'),
         'charm': get_quark_number(id1, 'c') + get_quark_number(id2, 'c'),
@@ -295,7 +312,7 @@ def generate_event(id1, id2, beam_energy, particles_list, resonances, max_attemp
     }
     
     # ОПТИМИЗАЦИЯ: предфильтруем резонансы по массе
-    valid_resonances = [r for r in resonances if safe_mass(r.mcid) < sqrt_s * 0.8]
+    valid_resonances = [r for r in resonances if safe_mass(r) < sqrt_s * 0.8]
     
     if not valid_resonances:
         print(f"⚠️  Нет подходящих резонансов для энергии {sqrt_s:.2f} ГэВ")
