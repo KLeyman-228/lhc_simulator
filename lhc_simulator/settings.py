@@ -24,9 +24,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-2=-=bbe_ib0o^l7nau6zlui-e(*l++w0e&0ba&17z78*atn0rx'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['147.45.219.43', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = [
+    "lhc-simulator.ru",
+    "www.lhc-simulator.ru",
+    "147.45.219.43",
+    "localhost",
+    "127.0.0.1",
+]
 
 
 # Application definition
@@ -86,8 +92,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # React/Vue dev server
     "http://localhost:8080",  # Альтернативный порт
     "http://147.45.219.43",
-    #"https://mysite.com",
-    #"https://www.mysite.com",
+    "https://lhc-simulator.ru",
+    "https://www.lhc-simulator.ru",
 ]
 
 TEMPLATES = [

@@ -57,7 +57,7 @@
     "type": "boson",
     "mcid": 23,
     "color": "#BC9019",
-    "symbol": "Z⁰"
+    "symbol": "Z"
   },
   {
     "name": "higgs",
@@ -261,7 +261,7 @@
     "type": "hadron",
     "mcid": 221,
     "color": "#4E3F8F",
-    "symbol": "η"
+    "symbol": "e"
   },
   {
     "name": "f_0(500)0",
@@ -333,7 +333,7 @@
     "type": "hadron",
     "mcid": 331,
     "color": "#4E3F8F",
-    "symbol": "η"
+    "symbol": "e⁰"
   },
   {
     "name": "f_0(980)0",
@@ -453,7 +453,7 @@
     "type": "hadron",
     "mcid": 20113,
     "color": "#4E3F8F",
-    "symbol": "a₁(⁰"
+    "symbol": "a₁⁰"
   },
   {
     "name": "a_1(1260)+",
@@ -513,7 +513,7 @@
     "type": "hadron",
     "mcid": 100221,
     "color": "#4E3F8F",
-    "symbol": "η"
+    "symbol": "e⁰"
   },
   {
     "name": "pi(1300)0",
@@ -645,7 +645,7 @@
     "type": "hadron",
     "mcid": 9020221,
     "color": "#4E3F8F",
-    "symbol": "η"
+    "symbol": "e⁰"
   },
   {
     "name": "h_1(1415)0",
@@ -777,7 +777,7 @@
     "type": "hadron",
     "mcid": 100331,
     "color": "#4E3F8F",
-    "symbol": "η"
+    "symbol": "e⁰"
   },
   {
     "name": "f_0(1500)0",
@@ -813,7 +813,7 @@
     "type": "hadron",
     "mcid": 335,
     "color": "#4E3F8F",
-    "symbol": "f₂⁰"
+    "symbol": "f"
   },
   {
     "name": "f_2(1565)0",
@@ -885,7 +885,7 @@
     "type": "hadron",
     "mcid": 9020113,
     "color": "#4E3F8F",
-    "symbol": "a⁰"
+    "symbol": "a₁⁰"
   },
   {
     "name": "a_1(1640)+",
@@ -933,7 +933,7 @@
     "type": "hadron",
     "mcid": 10225,
     "color": "#4E3F8F",
-    "symbol": "η"
+    "symbol": "e⁰"
   },
   {
     "name": "omega(1650)0",
@@ -1137,7 +1137,7 @@
     "type": "hadron",
     "mcid": 9040221,
     "color": "#4E3F8F",
-    "symbol": "η"
+    "symbol": "e⁰"
   },
   {
     "name": "pi(1800)0",
@@ -1209,7 +1209,7 @@
     "type": "hadron",
     "mcid": 10335,
     "color": "#4E3F8F",
-    "symbol": "η"
+    "symbol": "e⁰"
   },
   {
     "name": "rho(1900)0",
@@ -1497,7 +1497,7 @@
     "type": "hadron",
     "mcid": 9000229,
     "color": "#4E3F8F",
-    "symbol": "f₂⁰"
+    "symbol": "f"
   },
   {
     "name": "eta(2225)0",
@@ -1509,7 +1509,7 @@
     "type": "hadron",
     "mcid": 9080221,
     "color": "#4E3F8F",
-    "symbol": "η"
+    "symbol": "e⁰"
   },
   {
     "name": "rho_3(2250)0",
@@ -2673,7 +2673,7 @@
     "type": "hadron",
     "mcid": 411,
     "color": "#4E3F8F",
-    "symbol": "D⁺"
+    "symbol": "D"
   },
   {
     "name": "D-",
@@ -2685,7 +2685,7 @@
     "type": "hadron",
     "mcid": -411,
     "color": "#4E3F8F",
-    "symbol": "D⁺"
+    "symbol": "D"
   },
   {
     "name": "D0",
@@ -2697,7 +2697,7 @@
     "type": "hadron",
     "mcid": 421,
     "color": "#4E3F8F",
-    "symbol": "D⁺"
+    "symbol": "D"
   },
   {
     "name": "Dbar0",
@@ -2709,7 +2709,7 @@
     "type": "hadron",
     "mcid": -421,
     "color": "#4E3F8F",
-    "symbol": "D⁺"
+    "symbol": "D"
   },
   {
     "name": "D^*(2007)0",
@@ -2721,7 +2721,7 @@
     "type": "hadron",
     "mcid": 423,
     "color": "#4E3F8F",
-    "symbol": "D⁺"
+    "symbol": "D"
   },
   {
     "name": "Dbar^*(2007)0",
@@ -2733,7 +2733,7 @@
     "type": "hadron",
     "mcid": -423,
     "color": "#4E3F8F",
-    "symbol": "D⁺"
+    "symbol": "D"
   },
   {
     "name": "D^*(2010)+",
@@ -2745,7 +2745,7 @@
     "type": "hadron",
     "mcid": 413,
     "color": "#4E3F8F",
-    "symbol": "D⁺"
+    "symbol": "D"
   },
   {
     "name": "D^*(2010)-",
@@ -2757,7 +2757,7 @@
     "type": "hadron",
     "mcid": -413,
     "color": "#4E3F8F",
-    "symbol": "D⁺"
+    "symbol": "D"
   },
   {
     "name": "D_0^*(2300)0",
@@ -2769,7 +2769,7 @@
     "type": "hadron",
     "mcid": 10421,
     "color": "#4E3F8F",
-    "symbol": "D⁺"
+    "symbol": "D"
   },
   {
     "name": "Dbar_0^*(2300)0",
@@ -2781,7 +2781,7 @@
     "type": "hadron",
     "mcid": -10421,
     "color": "#4E3F8F",
-    "symbol": "D⁺"
+    "symbol": "D"
   },
   {
     "name": "D_0^*(2300)+",
@@ -2793,7 +2793,7 @@
     "type": "hadron",
     "mcid": 10411,
     "color": "#4E3F8F",
-    "symbol": "D⁺"
+    "symbol": "D"
   },
   {
     "name": "D_0^*(2300)-",
@@ -2805,7 +2805,7 @@
     "type": "hadron",
     "mcid": -10411,
     "color": "#4E3F8F",
-    "symbol": "D⁺"
+    "symbol": "D"
   },
   {
     "name": "D_1(2420)0",
@@ -2817,7 +2817,7 @@
     "type": "hadron",
     "mcid": 10423,
     "color": "#4E3F8F",
-    "symbol": "D₁⁰"
+    "symbol": "d₁⁰"
   },
   {
     "name": "Dbar_1(2420)0",
@@ -2841,7 +2841,7 @@
     "type": "hadron",
     "mcid": 10413,
     "color": "#4E3F8F",
-    "symbol": "D₁⁺"
+    "symbol": "d₁⁺"
   },
   {
     "name": "D_1(2420)-",
@@ -2853,7 +2853,7 @@
     "type": "hadron",
     "mcid": -10413,
     "color": "#4E3F8F",
-    "symbol": "D₁⁻"
+    "symbol": "d₁⁻"
   },
   {
     "name": "D_1(2430)0",
@@ -2865,7 +2865,7 @@
     "type": "hadron",
     "mcid": 20423,
     "color": "#4E3F8F",
-    "symbol": "D₁⁰"
+    "symbol": "d₁⁰"
   },
   {
     "name": "Dbar_1(2430)0",
@@ -2877,7 +2877,7 @@
     "type": "hadron",
     "mcid": -20423,
     "color": "#4E3F8F",
-    "symbol": "D̄₁⁰"
+    "symbol": "dbar₁⁰"
   },
   {
     "name": "D_2^*(2460)0",
@@ -2889,7 +2889,7 @@
     "type": "hadron",
     "mcid": 425,
     "color": "#4E3F8F",
-    "symbol": "D⁺"
+    "symbol": "D"
   },
   {
     "name": "Dbar_2^*(2460)0",
@@ -2901,7 +2901,7 @@
     "type": "hadron",
     "mcid": -425,
     "color": "#4E3F8F",
-    "symbol": "D⁺"
+    "symbol": "D"
   },
   {
     "name": "D_2^*(2460)+",
@@ -2913,7 +2913,7 @@
     "type": "hadron",
     "mcid": 415,
     "color": "#4E3F8F",
-    "symbol": "D⁺"
+    "symbol": "D"
   },
   {
     "name": "D_2^*(2460)-",
@@ -2925,7 +2925,7 @@
     "type": "hadron",
     "mcid": -415,
     "color": "#4E3F8F",
-    "symbol": "D⁺"
+    "symbol": "D"
   },
   {
     "name": "D_s()+",
@@ -2937,7 +2937,7 @@
     "type": "hadron",
     "mcid": 431,
     "color": "#4E3F8F",
-    "symbol": "D⁺"
+    "symbol": "D"
   },
   {
     "name": "D_s()-",
@@ -2949,7 +2949,7 @@
     "type": "hadron",
     "mcid": -431,
     "color": "#4E3F8F",
-    "symbol": "D⁺"
+    "symbol": "D"
   },
   {
     "name": "D_s^*()+",
@@ -2961,7 +2961,7 @@
     "type": "hadron",
     "mcid": 433,
     "color": "#4E3F8F",
-    "symbol": "D⁺"
+    "symbol": "D"
   },
   {
     "name": "D_s^*()-",
@@ -2973,7 +2973,7 @@
     "type": "hadron",
     "mcid": -433,
     "color": "#4E3F8F",
-    "symbol": "D⁺"
+    "symbol": "D"
   },
   {
     "name": "D_s0^*(2317)+",
@@ -2985,7 +2985,7 @@
     "type": "hadron",
     "mcid": 10431,
     "color": "#4E3F8F",
-    "symbol": "D⁺"
+    "symbol": "D"
   },
   {
     "name": "D_s0^*(2317)-",
@@ -2997,7 +2997,7 @@
     "type": "hadron",
     "mcid": -10431,
     "color": "#4E3F8F",
-    "symbol": "D⁺"
+    "symbol": "D"
   },
   {
     "name": "D_s1(2460)+",
@@ -3009,7 +3009,7 @@
     "type": "hadron",
     "mcid": 20433,
     "color": "#4E3F8F",
-    "symbol": "D⁺"
+    "symbol": "D"
   },
   {
     "name": "D_s1(2460)-",
@@ -3021,7 +3021,7 @@
     "type": "hadron",
     "mcid": -20433,
     "color": "#4E3F8F",
-    "symbol": "D⁺"
+    "symbol": "D"
   },
   {
     "name": "D_s1(2536)+",
@@ -3033,7 +3033,7 @@
     "type": "hadron",
     "mcid": 10433,
     "color": "#4E3F8F",
-    "symbol": "D⁺"
+    "symbol": "D"
   },
   {
     "name": "D_s1(2536)-",
@@ -3045,7 +3045,7 @@
     "type": "hadron",
     "mcid": -10433,
     "color": "#4E3F8F",
-    "symbol": "D⁺"
+    "symbol": "D"
   },
   {
     "name": "D_s2^*(2573)+",
@@ -3057,7 +3057,7 @@
     "type": "hadron",
     "mcid": 435,
     "color": "#4E3F8F",
-    "symbol": "D⁺"
+    "symbol": "D"
   },
   {
     "name": "D_s2^*(2573)-",
@@ -3069,7 +3069,7 @@
     "type": "hadron",
     "mcid": -435,
     "color": "#4E3F8F",
-    "symbol": "D⁺"
+    "symbol": "D"
   },
   {
     "name": "B+",
@@ -3081,7 +3081,7 @@
     "type": "hadron",
     "mcid": 521,
     "color": "#4E3F8F",
-    "symbol": "B⁺"
+    "symbol": "B"
   },
   {
     "name": "B-",
@@ -3093,7 +3093,7 @@
     "type": "hadron",
     "mcid": -521,
     "color": "#4E3F8F",
-    "symbol": "B⁺"
+    "symbol": "B"
   },
   {
     "name": "B0",
@@ -3105,7 +3105,7 @@
     "type": "hadron",
     "mcid": 511,
     "color": "#4E3F8F",
-    "symbol": "B⁺"
+    "symbol": "B"
   },
   {
     "name": "Bbar0",
@@ -3117,7 +3117,7 @@
     "type": "hadron",
     "mcid": -511,
     "color": "#4E3F8F",
-    "symbol": "B⁺"
+    "symbol": "B"
   },
   {
     "name": "B^*0",
@@ -3129,7 +3129,7 @@
     "type": "hadron",
     "mcid": 513,
     "color": "#4E3F8F",
-    "symbol": "B⁺"
+    "symbol": "B"
   },
   {
     "name": "Bbar^*0",
@@ -3141,7 +3141,7 @@
     "type": "hadron",
     "mcid": -513,
     "color": "#4E3F8F",
-    "symbol": "B⁺"
+    "symbol": "B"
   },
   {
     "name": "B^*+",
@@ -3153,7 +3153,7 @@
     "type": "hadron",
     "mcid": 523,
     "color": "#4E3F8F",
-    "symbol": "B⁺"
+    "symbol": "B"
   },
   {
     "name": "B^*-",
@@ -3165,7 +3165,7 @@
     "type": "hadron",
     "mcid": -523,
     "color": "#4E3F8F",
-    "symbol": "B⁺"
+    "symbol": "B"
   },
   {
     "name": "B_2^*(5747)0",
@@ -3177,7 +3177,7 @@
     "type": "hadron",
     "mcid": 515,
     "color": "#4E3F8F",
-    "symbol": "B⁺"
+    "symbol": "B"
   },
   {
     "name": "Bbar_2^*(5747)0",
@@ -3189,7 +3189,7 @@
     "type": "hadron",
     "mcid": -515,
     "color": "#4E3F8F",
-    "symbol": "B⁺"
+    "symbol": "B"
   },
   {
     "name": "B_2^*(5747)+",
@@ -3201,7 +3201,7 @@
     "type": "hadron",
     "mcid": 525,
     "color": "#4E3F8F",
-    "symbol": "B⁺"
+    "symbol": "B"
   },
   {
     "name": "B_2^*(5747)-",
@@ -3213,7 +3213,7 @@
     "type": "hadron",
     "mcid": -525,
     "color": "#4E3F8F",
-    "symbol": "B⁺"
+    "symbol": "B"
   },
   {
     "name": "B_s()0",
@@ -3225,7 +3225,7 @@
     "type": "hadron",
     "mcid": 531,
     "color": "#4E3F8F",
-    "symbol": "B⁺"
+    "symbol": "B"
   },
   {
     "name": "Bbar_s()0",
@@ -3237,7 +3237,7 @@
     "type": "hadron",
     "mcid": -531,
     "color": "#4E3F8F",
-    "symbol": "B⁺"
+    "symbol": "B"
   },
   {
     "name": "B_s^*0",
@@ -3249,7 +3249,7 @@
     "type": "hadron",
     "mcid": 533,
     "color": "#4E3F8F",
-    "symbol": "B⁺"
+    "symbol": "B"
   },
   {
     "name": "Bbar_s^*0",
@@ -3261,7 +3261,7 @@
     "type": "hadron",
     "mcid": -533,
     "color": "#4E3F8F",
-    "symbol": "B⁺"
+    "symbol": "B"
   },
   {
     "name": "B_s2^*(5840)0",
@@ -3273,7 +3273,7 @@
     "type": "hadron",
     "mcid": 535,
     "color": "#4E3F8F",
-    "symbol": "B⁺"
+    "symbol": "B"
   },
   {
     "name": "Bbar_s2^*(5840)0",
@@ -3285,7 +3285,7 @@
     "type": "hadron",
     "mcid": -535,
     "color": "#4E3F8F",
-    "symbol": "B⁺"
+    "symbol": "B"
   },
   {
     "name": "B_c()+",
@@ -3297,7 +3297,7 @@
     "type": "hadron",
     "mcid": 541,
     "color": "#4E3F8F",
-    "symbol": "B⁺"
+    "symbol": "B"
   },
   {
     "name": "B_c()-",
@@ -3309,7 +3309,7 @@
     "type": "hadron",
     "mcid": -541,
     "color": "#4E3F8F",
-    "symbol": "B⁺"
+    "symbol": "B"
   },
   {
     "name": "eta_c(1S)",
@@ -3321,7 +3321,7 @@
     "type": "hadron",
     "mcid": 441,
     "color": "#4E3F8F",
-    "symbol": "η"
+    "symbol": "e"
   },
   {
     "name": "J/psi(1S)",
@@ -3333,7 +3333,7 @@
     "type": "hadron",
     "mcid": 443,
     "color": "#4E3F8F",
-    "symbol": "J/ψ"
+    "symbol": "J"
   },
   {
     "name": "chi_c0(1P)",
@@ -3345,7 +3345,7 @@
     "type": "hadron",
     "mcid": 10441,
     "color": "#4E3F8F",
-    "symbol": "χ_c0"
+    "symbol": "χ_c"
   },
   {
     "name": "chi_c1(1P)",
@@ -3357,7 +3357,7 @@
     "type": "hadron",
     "mcid": 20443,
     "color": "#4E3F8F",
-    "symbol": "χ_c0"
+    "symbol": "χ_c"
   },
   {
     "name": "h_c(1P)",
@@ -3369,7 +3369,7 @@
     "type": "hadron",
     "mcid": 10443,
     "color": "#4E3F8F",
-    "symbol": "h_b"
+    "symbol": "h"
   },
   {
     "name": "chi_c2(1P)",
@@ -3381,7 +3381,7 @@
     "type": "hadron",
     "mcid": 445,
     "color": "#4E3F8F",
-    "symbol": "χ_c0"
+    "symbol": "χ_c"
   },
   {
     "name": "eta_c(2S)",
@@ -3393,7 +3393,7 @@
     "type": "hadron",
     "mcid": 100441,
     "color": "#4E3F8F",
-    "symbol": "η"
+    "symbol": "e"
   },
   {
     "name": "psi(2S)",
@@ -3405,7 +3405,7 @@
     "type": "hadron",
     "mcid": 100443,
     "color": "#4E3F8F",
-    "symbol": "ψ"
+    "symbol": "p"
   },
   {
     "name": "psi(3770)",
@@ -3417,7 +3417,7 @@
     "type": "hadron",
     "mcid": 30443,
     "color": "#4E3F8F",
-    "symbol": "ψ"
+    "symbol": "p"
   },
   {
     "name": "chi_c2(3930)",
@@ -3429,7 +3429,7 @@
     "type": "hadron",
     "mcid": 100445,
     "color": "#4E3F8F",
-    "symbol": "χ_c0"
+    "symbol": "χ_c"
   },
   {
     "name": "psi(4040)",
@@ -3441,7 +3441,7 @@
     "type": "hadron",
     "mcid": 9000443,
     "color": "#4E3F8F",
-    "symbol": "ψ"
+    "symbol": "p"
   },
   {
     "name": "psi(4160)",
@@ -3453,7 +3453,7 @@
     "type": "hadron",
     "mcid": 9010443,
     "color": "#4E3F8F",
-    "symbol": "ψ"
+    "symbol": "p"
   },
   {
     "name": "psi(4415)",
@@ -3465,7 +3465,7 @@
     "type": "hadron",
     "mcid": 9020443,
     "color": "#4E3F8F",
-    "symbol": "ψ"
+    "symbol": "p"
   },
   {
     "name": "eta_b(1S)",
@@ -3477,7 +3477,7 @@
     "type": "hadron",
     "mcid": 551,
     "color": "#4E3F8F",
-    "symbol": "η"
+    "symbol": "e"
   },
   {
     "name": "Upsilon(1S)",
@@ -3501,7 +3501,7 @@
     "type": "hadron",
     "mcid": 10551,
     "color": "#4E3F8F",
-    "symbol": "χ_b0"
+    "symbol": "χ_b"
   },
   {
     "name": "chi_b1(1P)",
@@ -3513,7 +3513,7 @@
     "type": "hadron",
     "mcid": 20553,
     "color": "#4E3F8F",
-    "symbol": "χ_b0"
+    "symbol": "χ_b"
   },
   {
     "name": "h_b(1P)",
@@ -3525,7 +3525,7 @@
     "type": "hadron",
     "mcid": 10553,
     "color": "#4E3F8F",
-    "symbol": "h_b"
+    "symbol": "h"
   },
   {
     "name": "chi_b2(1P)",
@@ -3537,7 +3537,7 @@
     "type": "hadron",
     "mcid": 555,
     "color": "#4E3F8F",
-    "symbol": "χ_b0"
+    "symbol": "χ_b"
   },
   {
     "name": "eta_b(2S)",
@@ -3549,7 +3549,7 @@
     "type": "hadron",
     "mcid": 100551,
     "color": "#4E3F8F",
-    "symbol": "η"
+    "symbol": "e"
   },
   {
     "name": "Upsilon(2S)",
@@ -3585,7 +3585,7 @@
     "type": "hadron",
     "mcid": 110551,
     "color": "#4E3F8F",
-    "symbol": "χ_b0"
+    "symbol": "χ_b"
   },
   {
     "name": "chi_b1(2P)",
@@ -3597,7 +3597,7 @@
     "type": "hadron",
     "mcid": 120553,
     "color": "#4E3F8F",
-    "symbol": "χ_b0"
+    "symbol": "χ_b"
   },
   {
     "name": "h_b(2P)",
@@ -3609,7 +3609,7 @@
     "type": "hadron",
     "mcid": 110553,
     "color": "#4E3F8F",
-    "symbol": "h_b"
+    "symbol": "h"
   },
   {
     "name": "chi_b2(2P)",
@@ -3621,7 +3621,7 @@
     "type": "hadron",
     "mcid": 100555,
     "color": "#4E3F8F",
-    "symbol": "χ_b0"
+    "symbol": "χ_b"
   },
   {
     "name": "Upsilon(3S)",
@@ -3645,7 +3645,7 @@
     "type": "hadron",
     "mcid": 220553,
     "color": "#4E3F8F",
-    "symbol": "χ_b0"
+    "symbol": "χ_b"
   },
   {
     "name": "chi_b2(3P)",
@@ -3657,7 +3657,7 @@
     "type": "hadron",
     "mcid": 200555,
     "color": "#4E3F8F",
-    "symbol": "χ_b0"
+    "symbol": "χ_b"
   },
   {
     "name": "Upsilon(4S)",

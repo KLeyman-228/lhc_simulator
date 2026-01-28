@@ -8,7 +8,6 @@ import numpy as np
 from collections import defaultdict
 from particle import Particle
 from functools import lru_cache
-from progress.bar import IncrementalBar
 
 # ============================================================================
 # ИНИЦИАЛИЗАЦИЯ PDG API
@@ -18,7 +17,7 @@ api = pdg.connect()
 
 # Глобальный кэш для частиц
 _particle_cache = {}
-_quark_cache = {}
+
 
 
 # ============================================================================
