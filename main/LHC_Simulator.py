@@ -13,6 +13,13 @@ from functools import lru_cache
 # ИНИЦИАЛИЗАЦИЯ PDG API
 # ============================================================================
 
+# путь к проекту
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# pdg.sqlite лежит рядом с этим файлом
+os.environ["PDG_DATA"] = BASE_DIR
+
+# создаётся ОДИН РАЗ на worker
 api = pdg.connect()
 
 # Глобальный кэш для частиц
