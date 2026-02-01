@@ -27,6 +27,26 @@ _particle_cache = {}
 PARTICLE_VALUES = {}
 RESONANCE_DECAYS = {}
 
+LEPTON_NUM = {
+    # Электронное семейство
+    11: {'e': 1, 'mu': 0, 'tau': 0},      # e-
+    -11: {'e': -1, 'mu': 0, 'tau': 0},    # e+
+    12: {'e': 1, 'mu': 0, 'tau': 0},      # nu_e
+    -12: {'e': -1, 'mu': 0, 'tau': 0},    # anti_nu_e
+    
+    # Мюонное семейство
+    13: {'e': 0, 'mu': 1, 'tau': 0},      # mu-
+    -13: {'e': 0, 'mu': -1, 'tau': 0},    # mu+
+    14: {'e': 0, 'mu': 1, 'tau': 0},      # nu_mu
+    -14: {'e': 0, 'mu': -1, 'tau': 0},    # anti_nu_mu
+    
+    # Таонное семейство
+    15: {'e': 0, 'mu': 0, 'tau': 1},      # tau-
+    -15: {'e': 0, 'mu': 0, 'tau': -1},    # tau+
+    16: {'e': 0, 'mu': 0, 'tau': 1},      # nu_tau
+    -16: {'e': 0, 'mu': 0, 'tau': -1},    # anti_nu_tau
+}
+
 
 # ============================================================================
 # КОНСТАНТЫ
@@ -60,6 +80,12 @@ def safe_charge(p):
         return 0
 
 
+def lepton_num(id):
+    try:
+        return LEPTON_NUM[id]
+    except:
+        return 0
+
 @lru_cache(maxsize=1000)
 def get_particle_quarks(mcid):
     """Кэшированное получение кварков частицы"""
@@ -91,8 +117,20 @@ def get_baryon_number(mcid):
         return count / 3
     except:
         return 0
-
-
+    
+@lru_cache(maxsize=1000)
+def get_lepton_numbers(mcid):
+    """
+    Получить лептонные числа частицы
+    
+    Returns:
+        dict: {'e': L_e, 'mu': L_mu, 'tau': L_tau}
+    """
+    if mcid in LEPTON_NUM:
+        return LEPTON_NUM[mcid]
+    else:
+        return {'e': 0, 'mu': 0, 'tau': 0}
+    
 @lru_cache(maxsize=1000)
 def get_quark_number(mcid, quark):
     """Вычисление квантового числа для кварка с кэшированием"""
@@ -121,7 +159,7 @@ def load_particles():
     print("% Загрузка частиц из базы...")
     particles = []
     resonances = []
-    
+    Type = ''
     # Получаем все частицы одним запросом
     all_pdgids = list(api.get_particles())
     
@@ -133,13 +171,23 @@ def load_particles():
         
         try:
             for particle in api.get(pdg_entry.pdgid):
-                if not (particle.is_baryon or particle.is_meson):
-                    continue
+                #if not (particle.is_baryon or particle.is_meson):
+                    #continue
                 if particle.mcid is None:
                     continue
 
                 # Кэшируем частицу
                 _particle_cache[particle.mcid] = particle
+                if particle.is_baryon:
+                    Type = 'baryon'
+                elif particle.is_meson:
+                    Type = 'meson'
+                elif particle.is_lepton:
+                    Type = 'lepton'
+                elif particle.is_boson:
+                    Type = 'boson'
+
+                lepton_nums = get_lepton_numbers(particle.mcid)
 
                 PARTICLE_VALUES[particle.mcid] = {
                         "mass": safe_mass(particle),
@@ -148,7 +196,12 @@ def load_particles():
                         "s": get_quark_number(particle.mcid, "s"),
                         "c": get_quark_number(particle.mcid, "c"),
                         "b": get_quark_number(particle.mcid, "b"),
-                        "J": particle.quantum_J
+                        "J": particle.quantum_J,
+                        "L_e": lepton_nums['e'],
+                        "L_mu": lepton_nums['mu'],
+                        "L_tau": lepton_nums['tau'],
+
+                        "type": Type
                     }
                 
                 # Разделяем на частицы и резонансы
@@ -159,7 +212,8 @@ def load_particles():
                         RESONANCE_DECAYS[particle.mcid] = bf
                 else:
                     particles.append(particle)
-        except:
+        except BaseException as es:
+            print(es)
             continue
     
     print(f"\n$ Загружено {len(particles)} частиц, {len(resonances)} резонансов")
@@ -171,7 +225,7 @@ def load_particles():
 # ============================================================================
 
 def calculate_temperature(sqrt_s):
-    """Быстрое вычисление температуры"""
+
     T_base = TEMPERATURE_SCALE
     
     if sqrt_s < 5.0:
@@ -181,21 +235,13 @@ def calculate_temperature(sqrt_s):
     else:
         return T_base * 1.2
 
-def generate_weight(particle, sqrt_s):
-    """
-    Упрощенное и быстрое вычисление веса
-    """
+
+def generate_weight(particle, sqrt_s, interaction_type='hadron-hadron'):
+    
     m = safe_mass(particle)
     
     # Быстрые фильтры
     if m > sqrt_s * MAX_MASS_FRACTION:
-        return 0.0
-    
-    if sqrt_s < 10.0 and m > 2.0:
-        return 0.0
-    if sqrt_s < 5.0 and m > 1.5:
-        return 0.0
-    if sqrt_s < 2.0 and m > 1.0:
         return 0.0
     
     try:
@@ -204,32 +250,62 @@ def generate_weight(particle, sqrt_s):
         gamma_c = 0.001
         
         J = particle.quantum_J
-        quarks = get_particle_quarks(particle.mcid)
         
-        n_s = quarks.count('s') + quarks.count('S')
-        n_c = quarks.count('c') + quarks.count('C')
+        # Базовый вес
+        if (particle.is_baryon or particle.is_meson):
+            quarks = get_particle_quarks(particle.mcid)
+            n_s = quarks.count('s') + quarks.count('S')
+            n_c = quarks.count('c') + quarks.count('C')
+            weight = (2 * J + 1) * exp(-m / T) * (gamma_s ** n_s) * (gamma_c ** n_c)
+            
+            # Усиление для протонов и нейтронов
+            if particle.mcid in [2212, 2112]:
+                weight *= 5
         
-        weight = (2 * J + 1) * exp(-m / T) * (gamma_s ** n_s) * (gamma_c ** n_c)
+        elif particle.is_lepton:
+            # Лептоны легче рождаются
+            weight = (2 * J + 1) * exp(-m / T) * 2.0
         
-        # Усиление для протонов и нейтронов
-        if particle.mcid in [2212, 2112]:
-            weight *= 5
+        elif particle.is_boson:
+            # Бозоны рождаются реже (кроме фотонов)
+            if particle.mcid == 22:  # фотон
+                weight = exp(-m / T) * 10.0
+            else:
+                weight = exp(-m / T) * 0.1
+        
+        else:
+            weight = 0.0
+        
+        # НОВОЕ: модификация веса в зависимости от типа взаимодействия
+        if interaction_type == 'hadron-lepton':
+            # При глубоконеупругом рассеянии предпочтительны кварки/глюоны
+            if (particle.is_baryon or particle.is_meson):
+                weight *= 2.0  # адроны рождаются чаще
+        
+        elif interaction_type == 'lepton-lepton':
+            # e+e- → μ+μ-, τ+τ-, адроны
+            if particle.is_lepton:
+                weight *= 3.0
+            elif particle.is_boson and particle.mcid == 22:
+                weight *= 5.0  # фотоны
         
         return weight if weight >= 1e-12 else 0.0
         
     except:
         return 0.0
 
-def get_weights(particles_list, sqrt_s):
+
+def get_weights(particles_list, sqrt_s, interaction_type='hadron-hadron'):
     """
-    Быстрое вычисление весов для списка частиц
+    Вычисление весов для списка частиц
+    
+    НОВОЕ: учитывает тип взаимодействия
     """
     valid_particles = []
     weights = []
     
-    # Быстрая фильтрация и вычисление весов
     for particle in particles_list:
-        w = generate_weight(particle, sqrt_s)
+        w = generate_weight(particle, sqrt_s, interaction_type)
         if w > 0:
             valid_particles.append(particle)
             weights.append(w)
@@ -237,14 +313,9 @@ def get_weights(particles_list, sqrt_s):
     if not valid_particles:
         raise ValueError("Нет доступных частиц для данной энергии")
     
-    # Преобразование в numpy для быстрых операций
     weights = np.array(weights, dtype=np.float64)
-    
-    # Добавляем шум
     noise = np.random.normal(1.0, 0.1, len(weights))
     weights *= np.clip(noise, 0.5, 2.0)
-    
-    # Нормализация
     probabilities = weights / np.sum(weights)
     
     return probabilities, valid_particles
@@ -265,7 +336,10 @@ def check_conservation(particles, initial_state, sqrt_s):
     strangenesses = np.array([PARTICLE_VALUES[p.mcid]['s'] for p in particles])
     charms = np.array([PARTICLE_VALUES[p.mcid]['c'] for p in particles])
     bottoms = np.array([PARTICLE_VALUES[p.mcid]['b'] for p in particles])
-
+    L_e = np.array([PARTICLE_VALUES[p.mcid]['L_e'] for p in particles])
+    L_mu = np.array([PARTICLE_VALUES[p.mcid]['L_mu'] for p in particles])
+    L_tau = np.array([PARTICLE_VALUES[p.mcid]['L_tau'] for p in particles])
+    
     # Выполняем суммирование
     total_mass = np.sum(masses)
     final_state = {
@@ -273,7 +347,10 @@ def check_conservation(particles, initial_state, sqrt_s):
         'baryon': np.sum(baryons),
         'strangeness': np.sum(strangenesses),
         'charm': np.sum(charms),
-        'bottom': np.sum(bottoms)
+        'bottom': np.sum(bottoms),
+        'L_e': np.sum(L_e),
+        'L_mu': np.sum(L_mu),
+        'L_tau': np.sum(L_tau),
     }
     
     # Кинематика
@@ -304,8 +381,182 @@ def check_conservation(particles, initial_state, sqrt_s):
 
 def is_valid_final_state(particles):
     """Проверка что все частицы - барионы или мезоны"""
-    return all(p.is_baryon or p.is_meson for p in particles)
+    return True #all(p.is_baryon or p.is_meson for p in particles)
 
+def get_interaction_type(id1, id2):
+
+    type1 = PARTICLE_VALUES[id1]['type']
+    type2 = PARTICLE_VALUES[id2]['type']
+    
+    types = {type1, type2}
+    
+    # Адрон + Адрон
+    if types <= {'baryon', 'meson'}:
+        return 'hadron-hadron'
+    
+    # Адрон + Лептон (глубоконеупругое рассеяние)
+    if types == {'baryon', 'lepton'} or types == {'meson', 'lepton'}:
+        return 'hadron-lepton'
+    
+    # Лептон + Лептон
+    if types == {'lepton'}:
+        return 'lepton-lepton'
+    
+    # Адрон + Бозон
+    if ('baryon' in types or 'meson' in types) and 'gauge_boson' in types:
+        return 'hadron-boson'
+    
+    # Лептон + Бозон
+    if types == {'lepton', 'gauge_boson'}:
+        return 'lepton-boson'
+    
+    return 'unknown'
+
+def generate_hadron_hadron_event(id1, id2, sqrt_s, initial_state, particles_all, resonances):
+
+    valid_resonances = [r for r in resonances if PARTICLE_VALUES[r.mcid]['mass'] < sqrt_s * 0.9]
+    
+    if not valid_resonances:
+        return None
+    
+    for _ in range(10000):
+        try:
+            chosen_particle = random.choice(particles_all)
+            chosen_resonance = random.choice(valid_resonances)
+            
+            branching_fractions = api.get_particle_by_name(chosen_resonance.name).exclusive_branching_fractions()
+            if not branching_fractions:
+                continue
+            
+            for branching in branching_fractions:
+                try:
+                    decay_products = [p.item.particle for p in branching.decay_products]
+                    final_products = decay_products + [chosen_particle]
+                    
+                    if check_conservation(final_products, initial_state, sqrt_s) and is_valid_final_state(final_products):
+                        return final_products, chosen_particle, chosen_resonance
+                except:
+                    continue
+        except:
+            continue
+    
+    return None
+
+def generate_hadron_lepton_event(hadron_id, lepton_id, sqrt_s, initial_state, particles_all, resonances):
+
+    # Получаем кварковую структуру адрона
+    hadron_quarks = get_particle_quarks(hadron_id)
+    if not hadron_quarks:
+        return None
+    
+    print(f"   Кварки адрона: {hadron_quarks}")
+
+    # Фильтруем возможные кварковые состояния заранее,
+    # выбирая только одиночные кварки и мезоны
+    quark_particles = [
+        p for p in particles_all
+        if len(get_particle_quarks(p.mcid)) <= 2
+    ]
+
+    if not quark_particles:
+        print("   ⚠️ Нет доступных кварковых состояний")
+        return None
+
+    # Количество попыток генерации события
+    max_attempts = 5000
+
+    while max_attempts > 0:
+        try:
+            # Случайно генерируем число фрагментов (от 2 до 3)
+            n_fragments = random.randint(2, 3)
+            fragments = random.sample(quark_particles, n_fragments)
+        
+            # Генератор случайного числа для выбора поведения лептона
+            rand_num = random.random()
+        
+            # Если вероятность меньше 0.7, сохраняем лептон как начальный
+            if rand_num < 0.7:
+                lepton_final = [_particle_cache[lepton_id]]
+            else:
+                # Иначе создаём пару лептон-анти-лептон
+                anti_lepton_id = -lepton_id
+                if anti_lepton_id in PARTICLE_VALUES:
+                    lepton_final = [_particle_cache[lepton_id], _particle_cache[anti_lepton_id]]
+                else:
+                    lepton_final = [_particle_cache[lepton_id]]
+                
+            # Объединяем фрагменты и лептонные продукты
+            final_products = fragments + lepton_final
+        
+            # Проверяем сохранение энергии и зарядов
+            if check_conservation(final_products, initial_state, sqrt_s) \
+               and is_valid_final_state(final_products):
+                return final_products, fragments[0], _particle_cache[lepton_id]
+        except Exception as e:
+            pass  # Продолжаем попытки даже при исключениях
+        
+        max_attempts -= 1
+    
+    return None
+
+def generate_lepton_lepton_event(id1, id2, sqrt_s, initial_state, particles_all, resonances):
+    
+    # Проверяем: частица + античастица?
+    is_annihilation = (id1 == -id2)
+    
+    if is_annihilation:
+        print("   💥 Аннигиляция лептон-антилептон")
+        
+        # e+e- → γγ, μ+μ-, τ+τ-, адроны
+        for _ in range(5000):
+            try:
+                # Выбор канала
+                channel = random.choice(['photons', 'leptons', 'hadrons'])
+                
+                if channel == 'photons':
+                    # → γγ
+                    photon = _particle_cache[22]
+                    final_products = [photon, photon]
+                
+                elif channel == 'leptons':
+                    # → l+l- (другое поколение)
+                    lepton_pairs = [(13, -13), (15, -15)]  # μ+μ-, τ+τ-
+                    pair = random.choice(lepton_pairs)
+                    if pair[0] in PARTICLE_VALUES and pair[1] in PARTICLE_VALUES:
+                        final_products = [_particle_cache[pair[0]], _particle_cache[pair[1]]]
+                    else:
+                        continue
+                
+                else:  # hadrons
+                    # → адроны (2-3 пиона)
+                    hadrons = [p for p in particles_all if (p.is_baryon or p.is_meson)]
+                    n_hadrons = random.randint(2, 3)
+                    final_products = random.choices(hadrons, k=n_hadrons)
+                
+                if check_conservation(final_products, initial_state, sqrt_s) and is_valid_final_state(final_products):
+                    return final_products, final_products[0], final_products[-1]
+            except:
+                continue
+    else:
+        # Обычное рассеяние l1 + l2 → l1 + l2 (+ фотоны)
+        print("   ↔️ Лептон-лептонное рассеяние")
+        
+        for _ in range(5000):
+            try:
+                # Упругое рассеяние + возможно фотон
+                final_products = [_particle_cache[id1], _particle_cache[id2]]
+                
+                if random.random() < 0.3 and sqrt_s > 1.0:
+                    # Излучение фотона
+                    photon = _particle_cache[22]
+                    final_products.append(photon)
+                
+                if check_conservation(final_products, initial_state, sqrt_s) and is_valid_final_state(final_products):
+                    return final_products, final_products[0], final_products[1]
+            except:
+                continue
+    
+    return None
 
 
 def generate_event(id1, id2, beam_energy, particles_list, resonances, max_attempts=100000):
@@ -329,15 +580,70 @@ def generate_event(id1, id2, beam_energy, particles_list, resonances, max_attemp
         'baryon': PARTICLE_VALUES[id1]['baryon'] + PARTICLE_VALUES[id2]['baryon'],
         'strangeness': PARTICLE_VALUES[id1]['s'] + PARTICLE_VALUES[id2]['s'],
         'charm': PARTICLE_VALUES[id1]['c'] + PARTICLE_VALUES[id2]['c'],
-        'bottom': PARTICLE_VALUES[id1]['b'] + PARTICLE_VALUES[id2]['b']
+        'bottom': PARTICLE_VALUES[id1]['b'] + PARTICLE_VALUES[id2]['b'],
+        'L_e': PARTICLE_VALUES[id1]['L_e'] + PARTICLE_VALUES[id2]['L_e'],
+        'L_mu': PARTICLE_VALUES[id1]['L_mu'] + PARTICLE_VALUES[id2]['L_mu'],
+        'L_tau': PARTICLE_VALUES[id1]['L_tau'] + PARTICLE_VALUES[id2]['L_tau'],
     }
     
-    # ОПТИМИЗАЦИЯ: предфильтруем резонансы по массе
+
+    interaction_type = get_interaction_type(id1, id2)
+
+    if interaction_type == 'hadron-hadron':
+        result = generate_hadron_hadron_event(id1, id2, sqrt_s, initial_state, particles_list, resonances)
+    
+    elif interaction_type == 'hadron-lepton':
+        # Определяем кто адрон, кто лептон
+        hadron_id = id1 if (PARTICLE_VALUES[id1]['type'] == 'baryon' or PARTICLE_VALUES[id1]['type'] == 'meson') else id2
+        lepton_id = id1 if PARTICLE_VALUES[id1]['type'] == 'lepton' else id2
+        result = generate_hadron_lepton_event(hadron_id, lepton_id, sqrt_s, initial_state, particles_list, resonances)
+    
+    elif interaction_type == 'lepton-lepton':
+        result = generate_lepton_lepton_event(id1, id2, sqrt_s, initial_state, particles_list, resonances)
+    
+    else:
+        print(f"   ⚠️ Тип взаимодействия {interaction_type} пока не реализован")
+        return None
+    
+    if result:
+        final_products, first_particle, second_particle = result
+        
+        # Формируем результат
+        products = {f'id_{i+1}': p.mcid for i, p in enumerate(final_products)}
+        
+        first_products = [{
+            "id_1": first_particle.mcid,
+            "id_2": second_particle.mcid
+        }]
+        
+        values = [{
+            "Mass": sqrt_s,
+            "BaryonNum": initial_state['baryon'],
+            "S,B,C": [
+                initial_state['strangeness'],
+                initial_state['bottom'],
+                initial_state['charm']
+            ],
+            "Charge": initial_state['charge'],
+        }]
+        
+        print(f"✓ Событие найдено!")
+        print(f"   Продукты: {[_particle_cache[p.mcid].name for p in final_products]}")
+        
+        return [products], first_products, values
+    
+    print(f"❌ Событие не найдено")
+    return None
+
+
+    """# ОПТИМИЗАЦИЯ: предфильтруем резонансы по массе
     valid_resonances = [r for r in resonances if PARTICLE_VALUES[r.mcid]['mass'] < sqrt_s * 0.9]
     
     if not valid_resonances:
         print(f"⚠️  Нет подходящих резонансов для энергии {sqrt_s:.2f} ГэВ")
         return None
+    
+    
     
     print(f"🔄 Генерация события: √s = {sqrt_s:.2f} ГэВ")
     print(f"   Доступно {len(particles_list)} частиц, {len(valid_resonances)} резонансов")
@@ -405,7 +711,7 @@ def generate_event(id1, id2, beam_energy, particles_list, resonances, max_attemp
     
     print(f"\n❌ Событие не найдено после {max_attempts} попыток")
     print(f"   Успешных проверок законов сохранения: {successful_attempts}")
-    return None
+    return None"""
 
 
 
