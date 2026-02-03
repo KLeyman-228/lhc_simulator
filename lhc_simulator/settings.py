@@ -131,6 +131,10 @@ EMAIL_USE_SSL = True
 EMAIL_HOST_USER = "lhc-simulator@yandex.ru"
 EMAIL_HOST_PASSWORD = "NpZDf1OX"
 
+AUTHENTICATION_BACKENDS = [
+    'account.auth_backends.EmailAuthenticationBackend',
+]
+
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
