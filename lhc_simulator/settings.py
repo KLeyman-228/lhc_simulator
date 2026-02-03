@@ -123,6 +123,14 @@ WSGI_APPLICATION = 'lhc_simulator.wsgi.application'
 ACCOUNT_EMAIL_UNIQUE = True
 ACCOUNT_EMAIL_CONFIRMATION_REQUIRED = True
 
+DEFAULT_FROM_EMAIL = 'smtp.yandex.ru'
+EMAIL_HOST = "smtp.yandex.ru"
+EMAIL_PORT = 465
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = True
+EMAIL_HOST_USER = "lhc-simulator@yandex.ru"
+EMAIL_HOST_PASSWORD = "NpZDf1OX"
+
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
