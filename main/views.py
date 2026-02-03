@@ -3,6 +3,8 @@ from rest_framework.response import Response
 import json
 from django.http import JsonResponse
 from .LHC_Simulator import SimulationEvent, load_particles
+from django.views.decorators.csrf import ensure_csrf_cookie
+from django.views.decorators.http import require_GET
 
 
 # Глобальные переменные
@@ -10,6 +12,11 @@ Load_particle = False
 particle_list = []
 resonances = []  # ← Добавь эту переменную!
 
+@require_GET
+@ensure_csrf_cookie
+def csrf(request):
+    # Просто устанавливает csrftoken cookie
+    return JsonResponse({"detail": "CSRF cookie set"})
 
 @api_view(['POST'])
 def get_inputs(request):
