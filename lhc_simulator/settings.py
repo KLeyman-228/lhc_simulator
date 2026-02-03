@@ -39,6 +39,7 @@ ALLOWED_HOSTS = [
 
 INSTALLED_APPS = [
     'main',
+    'accounts',
     'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -46,6 +47,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+    'account'
 ]
 
 MIDDLEWARE = [
@@ -60,6 +63,10 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+MIDDLEWARE_CLASSES = [
+    'account.middleware.LocaleMiddleware',
+    'account.middleware.TimezoneMiddleware'
+]
 ROOT_URLCONF = 'lhc_simulator.urls'
 
 if DEBUG:
@@ -106,6 +113,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'account.context_processors.account'
             ],
         },
     },
@@ -113,6 +121,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'lhc_simulator.wsgi.application'
 
+ACCOUNT_EMAIL_UNIQUE = True
+ACCOUNT_EMAIL_CONFIRMATION_REQUIRED = True
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
