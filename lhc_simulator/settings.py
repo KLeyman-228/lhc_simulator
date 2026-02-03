@@ -129,7 +129,7 @@ EMAIL_PORT = 465
 EMAIL_USE_TLS = False
 EMAIL_USE_SSL = True
 EMAIL_HOST_USER = "lhc-simulator@yandex.ru"
-EMAIL_HOST_PASSWORD = "NpZDf1OX"
+EMAIL_HOST_PASSWORD = "cfzsbeteqsmvzoky"
 
 AUTHENTICATION_BACKENDS = [
     'account.auth_backends.EmailAuthenticationBackend',
