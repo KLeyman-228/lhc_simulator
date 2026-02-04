@@ -132,7 +132,7 @@ EMAIL_HOST_USER = "LHC_AUTH_EMAIL"
 EMAIL_HOST_PASSWORD = "cfzsbeteqsmvzoky"
 
 AUTHENTICATION_BACKENDS = [
-    'account.auth_backends.EmailAuthenticationBackend',
+    'accounts.auth_backends.EmailAuthenticationBackend',
 ]
 
 # Database
