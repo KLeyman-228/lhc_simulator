@@ -63,8 +63,8 @@ MIDDLEWARE = [
 ]
 
 MIDDLEWARE_CLASSES = [
-    'account.middleware.LocaleMiddleware',
-    'account.middleware.TimezoneMiddleware'
+    'accounts.middleware.LocaleMiddleware',
+    'accounts.middleware.TimezoneMiddleware'
 ]
 ROOT_URLCONF = 'lhc_simulator.urls'
 
@@ -112,7 +112,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'account.context_processors.account'
+                'accounts.context_processors.account'
             ],
         },
     },
