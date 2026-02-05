@@ -8,7 +8,7 @@ Load_particle = False
 test_json = json.dumps([
 {
     "id_1": 2212,
-    "id_2": 2212,
+    "id_2": 11,
     "Energy": 70,
 }
 ])

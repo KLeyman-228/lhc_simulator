@@ -186,6 +186,8 @@ def load_particles():
                     Type = 'lepton'
                 elif particle.is_boson:
                     Type = 'boson'
+                elif particle.is_quark:
+                    Type = 'quark'
 
                 lepton_nums = get_lepton_numbers(particle.mcid)
 
@@ -392,23 +394,29 @@ def get_interaction_type(id1, id2):
     
     # Адрон + Адрон
     if types <= {'baryon', 'meson'}:
+        print('hh')
         return 'hadron-hadron'
+    
     
     # Адрон + Лептон (глубоконеупругое рассеяние)
     if types == {'baryon', 'lepton'} or types == {'meson', 'lepton'}:
+        print('hl')
         return 'hadron-lepton'
     
     # Лептон + Лептон
     if types == {'lepton'}:
+        print('ll')
         return 'lepton-lepton'
     
     # Адрон + Бозон
     if ('baryon' in types or 'meson' in types) and 'gauge_boson' in types:
+        print('hb')
         return 'hadron-boson'
     
     # Лептон + Бозон
     if types == {'lepton', 'gauge_boson'}:
-        return 'lepton-boson'
+        print('hh')
+        return 'lb'
     
     return 'unknown'
 

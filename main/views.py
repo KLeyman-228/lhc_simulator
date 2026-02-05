@@ -18,37 +18,23 @@ def csrf(request):
     # Просто устанавливает csrftoken cookie
     return JsonResponse({"detail": "CSRF cookie set"})
 
+
 @api_view(['POST'])
 def get_inputs(request):
-    if request.method != "POST":
-        return JsonResponse(
-            {"error": "Only POST allowed"},
-            status=405
-        )
-
     try:
-        data = json.loads(request.body.decode("utf-8"))
+        data = request.data  # ✅ DRF сам парсит JSON и кэширует body
     except Exception as e:
-        return JsonResponse(
-            {"error": f"Invalid JSON: {str(e)}"},
-            status=400
-        )
+        return JsonResponse({"error": f"Invalid JSON: {str(e)}"}, status=400)
 
     if not isinstance(data, list) or not data:
-        return JsonResponse(
-            {"error": "Payload must be a non-empty list"},
-            status=400
-        )
+        return JsonResponse({"error": "Payload must be a non-empty list"}, status=400)
 
     inputs = data[0]
 
     try:
         result = Collide_Simulation(inputs)
     except Exception as e:
-        return JsonResponse(
-            {"error": str(e)},
-            status=500
-        )
+        return JsonResponse({"error": str(e)}, status=500)
 
     return JsonResponse(result, safe=False)
 
