@@ -12,6 +12,7 @@ class User(AbstractUser):
 
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата регистрации")
 
+    #USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['email']
 
     class Meta:

@@ -37,6 +37,7 @@ class UserAdmin(BaseUserAdmin):
 
 @admin.register(SimulationLog)
 class SimulationLogAdmin(admin.ModelAdmin):
+    
     list_display = [
         'user', 
         'simulation_type', 
@@ -44,6 +45,7 @@ class SimulationLogAdmin(admin.ModelAdmin):
         'duration',
         'created_at'
     ]
+
     list_filter = ['simulation_type', 'created_at']
     search_fields = ['user__username', 'user__email']
     date_hierarchy = 'created_at'
