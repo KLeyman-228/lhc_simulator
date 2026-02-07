@@ -153,9 +153,6 @@ EMAIL_USE_SSL = True
 EMAIL_HOST_USER = "LHC_AUTH_EMAIL"
 EMAIL_HOST_PASSWORD = "cfzsbeteqsmvzoky"
 
-AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',
-]
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
@@ -177,6 +174,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {
+            'min_length': 8,
+        }
     },
     {
         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
