@@ -3,66 +3,52 @@ from django.contrib.auth import login, authenticate
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
+from rest_framework import status
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.db.models import F
+from django.utils import timezone
+from django.contrib.auth import authenticate, get_user_model
 import json
 
+from .serializers import (
+    RegisterSerializer, 
+    UserSerializer, 
+    LeaderboardSerializer,
+    SimulationLogSerializer
+)
+from .models import SimulationLog
+
+User = get_user_model()
+
+
 @csrf_exempt  # Для POST-запросов от фронтенда (в продакшене используйте токены)
+@permission_classes([AllowAny])
 def signup_view(request):
     if request.method == 'POST':
         try:
-            data = json.loads(request.body)
+            serializer = RegisterSerializer(data=request.data)
             
-            # Валидация данных
-            username = data.get('username')
-            email = data.get('email')
-            password = data.get('password')
-            password2 = data.get('password2')
+            if serializer.is_valid():
+                user = serializer.save()
+                
+                # Создаем JWT токены
+                refresh = RefreshToken.for_user(user)
+                
+                return Response({
+                    'user': {
+                        'id': user.id,
+                        'username': user.username,
+                        'email': user.email,
+                    },
+                    'refresh': str(refresh),
+                    'access': str(refresh.access_token),
+                    'message': 'Регистрация успешна! Добро пожаловать!'
+                }, status=status.HTTP_201_CREATED)
             
-            # Проверка обязательных полей
-            if not all([username, email, password, password2]):
-                return JsonResponse({
-                    'success': False,
-                    'error': 'Все поля обязательны'
-                }, status=400)
-            
-            # Проверка совпадения паролей
-            if password != password2:
-                return JsonResponse({
-                    'success': False,
-                    'error': 'Пароли не совпадают'
-                }, status=400)
-            
-            # Проверка уникальности пользователя
-            if User.objects.filter(username=username).exists():
-                return JsonResponse({
-                    'success': False,
-                    'error': 'Пользователь с таким именем уже существует'
-                }, status=400)
-            
-            if User.objects.filter(email=email).exists():
-                return JsonResponse({
-                    'success': False,
-                    'error': 'Пользователь с таким email уже существует'
-                }, status=400)
-            
-            # Создание пользователя
-            user = User.objects.create_user(
-                username=username,
-                email=email,
-                password=password
-            )
-            
-            # Автоматический логин после регистрации
-            login(request, user)
-            
-            return JsonResponse({
-                'success': True,
-                'message': 'Регистрация успешна',
-                'user': {
-                    'id': user.id,
-                    'username': user.username,
-                    'email': user.email
-                }
-            })
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             
         except json.JSONDecodeError:
             return JsonResponse({
@@ -80,41 +66,40 @@ def signup_view(request):
         'error': 'Метод не разрешен'
     }, status=405)
 
+
+
 @csrf_exempt
+@permission_classes([AllowAny])
 def login_view(request):
     if request.method == 'POST':
         try:
-            data = json.loads(request.body)
+            email = request.data.get('email')
+            password = request.data.get('password')
             
-            username = data.get('username')
-            password = data.get('password')
+            if not email or not password:
+                return Response(
+                    {'error': 'Укажите логин и пароль'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
             
-            if not username or not password:
-                return JsonResponse({
-                    'success': False,
-                    'error': 'Имя пользователя и пароль обязательны'
-                }, status=400)
+            # Аутентификация
+            user = authenticate(username=email, password=password)
             
-            # Аутентификация пользователя
-            user = authenticate(username=username, password=password)
+            if not user:
+                return Response(
+                    {'error': 'Неверный логин или пароль'},
+                    status=status.HTTP_401_UNAUTHORIZED
+                )
             
-            if user is not None:
-                login(request, user)
-                
-                return JsonResponse({
-                    'success': True,
-                    'message': 'Вход выполнен успешно',
-                    'user': {
-                        'id': user.id,
-                        'username': user.username,
-                        'email': user.email
-                    }
-                })
-            else:
-                return JsonResponse({
-                    'success': False,
-                    'error': 'Неверное имя пользователя или пароль'
-                }, status=401)
+            # Создаем токены
+            refresh = RefreshToken.for_user(user)
+            
+            return Response({
+                'user': UserSerializer(user).data,
+                'refresh': str(refresh),
+                'access': str(refresh.access_token),
+                'message': f'Добро пожаловать, {user.username}!'
+            })
                 
         except json.JSONDecodeError:
             return JsonResponse({
@@ -128,6 +113,7 @@ def login_view(request):
     }, status=405)
 
 @csrf_exempt
+@permission_classes([IsAuthenticated])
 def logout_view(request):
     if request.method == 'POST':
         from django.contrib.auth import logout
@@ -157,3 +143,33 @@ def check_auth_view(request):
         return JsonResponse({
             'authenticated': False
         })
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def update_profile(request):
+    user = request.user
+    username = request.data.get('username')
+    email = request.data.get('email')
+    
+    if username and username != user.username:
+        if User.objects.filter(username=username).exists():
+            return Response(
+                {'error': 'Этот username уже занят'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        user.username = username
+    
+    if email and email != user.email:
+        if User.objects.filter(email=email).exists():
+            return Response(
+                {'error': 'Этот email уже используется'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        user.email = email
+    
+    user.save()
+    
+    return Response({
+        'message': 'Профиль обновлен',
+        'user': UserSerializer(user).data
+    })
