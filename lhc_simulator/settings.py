@@ -48,6 +48,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+
+    'rest_framework',
+    'rest_framework_simplejwt',
 ]
 
 MIDDLEWARE = [
@@ -66,6 +69,25 @@ MIDDLEWARE_CLASSES = [
     'accounts.middleware.LocaleMiddleware',
     'accounts.middleware.TimezoneMiddleware'
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+}
+
+# JWT настройки
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+}
+
+# Кастомная модель User
+AUTH_USER_MODEL = 'accounts.User'
+
+
 ROOT_URLCONF = 'lhc_simulator.urls'
 
 if DEBUG:
@@ -118,6 +140,7 @@ TEMPLATES = [
     },
 ]
 
+
 WSGI_APPLICATION = 'lhc_simulator.wsgi.application'
 
 ACCOUNT_EMAIL_UNIQUE = True
@@ -132,7 +155,7 @@ EMAIL_HOST_USER = "LHC_AUTH_EMAIL"
 EMAIL_HOST_PASSWORD = "cfzsbeteqsmvzoky"
 
 AUTHENTICATION_BACKENDS = [
-    'accounts.auth_backends.EmailAuthenticationBackend',
+    'django.contrib.auth.backends.ModelBackend',
 ]
 
 # Database
