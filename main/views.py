@@ -6,6 +6,11 @@ from .LHC_Simulator import SimulationEvent, load_particles
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_GET
 
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from accounts.utils import add_simulation_rating
+
 
 # Глобальные переменные
 Load_particle = False
@@ -20,6 +25,7 @@ def csrf(request):
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def get_inputs(request):
     try:
         data = request.data  # ✅ DRF сам парсит JSON и кэширует body
@@ -33,6 +39,22 @@ def get_inputs(request):
 
     try:
         result = Collide_Simulation(inputs)
+
+        simulation_type = 'hadron-hadron'
+        energy = 13
+        
+        # Запускаем симуляцию
+        simulation_results = result
+        
+        # Добавляем рейтинг
+        rating_update = add_simulation_rating(
+            user=request.user,
+            simulation_type=simulation_type,
+            particles_detected=simulation_results['count'],
+            energy=energy,
+            collision_results=simulation_results['collision_data']
+        )
+
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
 
