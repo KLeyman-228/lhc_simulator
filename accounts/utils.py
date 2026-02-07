@@ -52,10 +52,10 @@ def add_simulation_rating(user, simulation_type, particles_detected=0,
     
     user.refresh_from_db()
     
-"""    return {
+    return {
         'success': True,
         'points_earned': total_points,
         'total_rating': user.rating_score,
         'total_simulations': user.simulation_count,
         'simulation_id': simulation_log.id
-    }"""
+    }
