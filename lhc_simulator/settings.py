@@ -84,8 +84,7 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
 }
 
-# Кастомная модель User
-AUTH_USER_MODEL = 'accounts.User'
+
 
 
 ROOT_URLCONF = 'lhc_simulator.urls'
@@ -226,3 +225,6 @@ CSRF_TRUSTED_ORIGINS = [
     "https://lhc-simulator.ru",
     "https://www.lhc-simulator.ru",
 ]
+
+# Кастомная модель User
+AUTH_USER_MODEL = 'accounts.User'

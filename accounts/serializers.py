@@ -65,14 +65,14 @@ class UserSerializer(serializers.ModelSerializer):
             'email', 
             'simulation_count', 
             'rating_score',
-            'last_simulation_at',
+            'last_simulation_time',
             'rank',
             'created_at'
         ]
         read_only_fields = [
             'simulation_count', 
             'rating_score', 
-            'last_simulation_at'
+            'last_simulation_time'
         ]
     
     def get_rank(self, obj):
