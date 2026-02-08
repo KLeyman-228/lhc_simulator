@@ -177,7 +177,7 @@ def run_simulation(request):
     User.objects.filter(pk=user.pk).update(
         simulation_count=F('simulation_count') + 1,
         rating_score=F('rating_score') + total_points,
-        last_simulation_at=timezone.now()
+        last_simulation_time=timezone.now()
     )
     
     # Логирование
