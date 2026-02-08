@@ -21,7 +21,7 @@ User = get_user_model()
 
 # ========== РЕГИСТРАЦИЯ ==========
 
-@api_view(['POST'])  # ← ДОБАВИЛИ ЭТО!
+@api_view(['POST'])
 @permission_classes([AllowAny])
 def signup_view(request):
     """Регистрация нового пользователя"""
@@ -29,8 +29,6 @@ def signup_view(request):
     
     if serializer.is_valid():
         user = serializer.save()
-        
-        # Создаем JWT токены
         refresh = RefreshToken.for_user(user)
         
         return Response({
@@ -41,7 +39,7 @@ def signup_view(request):
             },
             'refresh': str(refresh),
             'access': str(refresh.access_token),
-            'message': 'Регистрация успешна! Добро пожаловать!'
+            'message': 'Регистрация успешна!'
         }, status=status.HTTP_201_CREATED)
     
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -49,11 +47,11 @@ def signup_view(request):
 
 # ========== ВХОД ==========
 
-@api_view(['POST'])  # ← ДОБАВИЛИ ЭТО!
+@api_view(['POST'])
 @permission_classes([AllowAny])
 def login_view(request):
     """Вход в аккаунт"""
-    username = request.data.get('username')  # Или 'email' если логин по email
+    username = request.data.get('username')
     password = request.data.get('password')
     
     if not username or not password:
@@ -62,7 +60,6 @@ def login_view(request):
             status=status.HTTP_400_BAD_REQUEST
         )
     
-    # Аутентификация
     user = authenticate(username=username, password=password)
     
     if not user:
@@ -71,7 +68,6 @@ def login_view(request):
             status=status.HTTP_401_UNAUTHORIZED
         )
     
-    # Создаем токены
     refresh = RefreshToken.for_user(user)
     
     return Response({
@@ -82,39 +78,188 @@ def login_view(request):
     })
 
 
-# ========== ВЫХОД ==========
+# ========== ПРОФИЛЬ С ПОЛНОЙ ИНФОРМАЦИЕЙ ==========
 
-@api_view(['POST'])  # ← ДОБАВИЛИ ЭТО!
-@permission_classes([IsAuthenticated])
-def logout_view(request):
-    """Выход из аккаунта"""
-    return Response({
-        'success': True,
-        'message': 'Выход выполнен успешно'
-    })
-
-
-# ========== ПРОВЕРКА АВТОРИЗАЦИИ ==========
-
-@api_view(['GET'])  # ← ДОБАВИЛИ ЭТО!
-@permission_classes([IsAuthenticated])
-def check_auth_view(request):
-    """Проверка, авторизован ли пользователь"""
-    return Response({
-        'authenticated': True,
-        'user': UserSerializer(request.user).data
-    })
-
-
-# ========== ПРОФИЛЬ ==========
-
-@api_view(['GET'])  # ← ДОБАВИЛИ ЭТО!
+@api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_profile(request):
-    """Получить профиль текущего пользователя"""
-    serializer = UserSerializer(request.user)
-    return Response(serializer.data)
+    """
+    Получить полный профиль текущего пользователя
+    
+    Возвращает:
+    - Информацию о пользователе
+    - Ранг в рейтинге
+    - Статистику
+    """
+    user = request.user
+    
+    # Вычисляем ранг
+    rank = User.objects.filter(rating_score__gt=user.rating_score).count() + 1
+    total_users = User.objects.filter(simulation_count__gt=0).count()
+    
+    return Response({
+        'id': user.id,
+        'username': user.username,
+        'email': user.email,
+        'simulation_count': user.simulation_count,
+        'rating_score': user.rating_score,
+        'last_simulation_time': user.last_simulation_time,
+        'created_at': user.created_at,
+        'rank': rank,
+        'total_users': total_users
+    })
 
+
+# ========== ИСТОРИЯ СИМУЛЯЦИЙ ==========
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_my_simulations(request):
+    """
+    Получить историю симуляций текущего пользователя
+    
+    Query параметры:
+    - limit: количество записей (по умолчанию 10)
+    """
+    limit = int(request.GET.get('limit', 10))
+    
+    simulations = SimulationLog.objects.filter(
+        user=request.user
+    ).order_by('-created_at')[:limit]
+    
+    serializer = SimulationLogSerializer(simulations, many=True)
+    
+    return Response({
+        'simulations': serializer.data,
+        'total_count': SimulationLog.objects.filter(user=request.user).count()
+    })
+
+
+# ========== ПОЛНАЯ СТАТИСТИКА (ПРОФИЛЬ + СИМУЛЯЦИИ) ==========
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_my_stats(request):
+    """
+    Получить полную статистику пользователя
+    
+    Возвращает:
+    - Профиль
+    - Ранг
+    - Последние 10 симуляций
+    """
+    user = request.user
+    
+    # Ранг
+    rank = User.objects.filter(rating_score__gt=user.rating_score).count() + 1
+    total_users = User.objects.filter(simulation_count__gt=0).count()
+    
+    # Последние симуляции
+    recent_simulations = SimulationLog.objects.filter(user=user).order_by('-created_at')[:10]
+    
+    return Response({
+        'user': {
+            'id': user.id,
+            'username': user.username,
+            'email': user.email,
+            'simulation_count': user.simulation_count,
+            'rating_score': user.rating_score,
+            'last_simulation_time': user.last_simulation_time,
+            'created_at': user.created_at,
+        },
+        'rank': rank,
+        'total_users': total_users,
+        'recent_simulations': SimulationLogSerializer(recent_simulations, many=True).data
+    })
+
+
+# ========== ТАБЛИЦА ЛИДЕРОВ ==========
+
+@api_view(['GET'])
+def get_leaderboard(request):
+    """
+    Получить таблицу лидеров
+    
+    Query параметры:
+    - limit: количество пользователей (по умолчанию 100)
+    """
+    limit = int(request.GET.get('limit', 100))
+    
+    users = User.objects.filter(
+        simulation_count__gt=0
+    ).order_by('-rating_score')[:limit]
+    
+    leaderboard = []
+    for index, user in enumerate(users, start=1):
+        leaderboard.append({
+            'rank': index,
+            'id': user.id,
+            'username': user.username,
+            'rating_score': user.rating_score,
+            'simulation_count': user.simulation_count,
+            'created_at': user.created_at
+        })
+    
+    return Response({
+        'leaderboard': leaderboard,
+        'total_users': User.objects.filter(simulation_count__gt=0).count()
+    })
+
+
+# ========== ЗАПУСК СИМУЛЯЦИИ ==========
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def run_simulation(request):
+    """Запустить симуляцию и обновить рейтинг"""
+    user = request.user
+    simulation_type = request.data.get('simulation_type', 'proton_proton')
+    energy = request.data.get('energy')
+    duration = request.data.get('duration')
+    simulation_results = request.data.get('simulation_results', [])  # ← ИСПРАВЛЕНО (убран пробел)
+    
+    # Расчет очков
+    SIMULATION_POINTS = {
+        'proton_proton': 10,
+        'proton_neutron': 15,
+        'quark_collision': 20,
+    }
+    base_points = SIMULATION_POINTS.get(simulation_type, 10)
+    total_points = base_points
+    
+    # Обновление рейтинга
+    User.objects.filter(pk=user.pk).update(
+        simulation_count=F('simulation_count') + 1,
+        rating_score=F('rating_score') + total_points,
+        last_simulation_time=timezone.now()  # ← ИСПРАВЛЕНО (было last_simulation_time)
+    )
+    
+    # Логирование
+    simulation_log = SimulationLog.objects.create(
+        user=user,
+        simulation_type=simulation_type,
+        energy=energy,
+        duration=duration,
+        simulation_results=simulation_results  # ← ИСПРАВЛЕНО (убран пробел)
+    )
+    
+    user.refresh_from_db()
+    
+    # Новый ранг после симуляции
+    new_rank = User.objects.filter(rating_score__gt=user.rating_score).count() + 1
+    
+    return Response({
+        'success': True,
+        'simulation_id': simulation_log.id,
+        'simulation_count': user.simulation_count,
+        'rating_score': user.rating_score,
+        'points_earned': total_points,
+        'rank': new_rank,
+        'message': f'Симуляция завершена! +{total_points} очков'
+    })
+
+
+# ========== ОБНОВЛЕНИЕ ПРОФИЛЯ ==========
 
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
@@ -148,87 +293,13 @@ def update_profile(request):
     })
 
 
-# ========== СИМУЛЯЦИИ И РЕЙТИНГ ==========
+# ========== ВЫХОД ==========
 
-SIMULATION_POINTS = {
-    'proton_proton': 10,
-    'proton_neutron': 15,
-    'quark_collision': 20,
-}
-
-
-
-@api_view(['POST'])  # ← ДОБАВИЛИ ЭТО!
+@api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def run_simulation(request):
-    """Запустить симуляцию и обновить рейтинг"""
-    user = request.user
-    simulation_type = request.data.get('simulation_type', 'proton_proton')
-    energy = request.data.get('energy')
-    duration = request.data.get('duration')
-    simulation_results  = request.data.get('simulation_results ', [])
-    
-    # Расчет очков
-    base_points = SIMULATION_POINTS.get(simulation_type, 10)
-    total_points = base_points
-    
-    # Обновление рейтинга
-    User.objects.filter(pk=user.pk).update(
-        simulation_count=F('simulation_count') + 1,
-        rating_score=F('rating_score') + total_points,
-        last_simulation_time=timezone.now()
-    )
-    
-    # Логирование
-    SimulationLog.objects.create(
-        user=user,
-        simulation_type=simulation_type,
-        energy=energy,
-        duration=duration,
-        simulation_results =simulation_results 
-    )
-    
-    user.refresh_from_db()
-    
+def logout_view(request):
+    """Выход из аккаунта"""
     return Response({
         'success': True,
-        'simulation_count': user.simulation_count,
-        'rating_score': user.rating_score,
-        'points_earned': total_points,
-        'message': f'Симуляция завершена! +{total_points} очков'
-    })
-
-
-@api_view(['GET'])  # ← ДОБАВИЛИ ЭТО!
-def get_leaderboard(request):
-    """Получить топ пользователей"""
-    limit = int(request.GET.get('limit', 100))
-    
-    users = User.objects.filter(
-        simulation_count__gt=0
-    ).order_by('-rating_score')[:limit]
-    
-    leaderboard = []
-    for index, user in enumerate(users, start=1):
-        user_data = LeaderboardSerializer(user).data
-        user_data['rank'] = index
-        leaderboard.append(user_data)
-    
-    return Response({'leaderboard': leaderboard})
-
-
-@api_view(['GET'])  # ← ДОБАВИЛИ ЭТО!
-@permission_classes([IsAuthenticated])
-def get_my_stats(request):
-    """Получить статистику пользователя"""
-    user = request.user
-    
-    rank = User.objects.filter(rating_score__gt=user.rating_score).count() + 1
-    recent_simulations = SimulationLog.objects.filter(user=user)[:10]
-    
-    return Response({
-        'user': UserSerializer(user).data,
-        'rank': rank,
-        'total_users': User.objects.filter(simulation_count__gt=0).count(),
-        'recent_simulations': SimulationLogSerializer(recent_simulations, many=True).data
+        'message': 'Выход выполнен успешно'
     })
