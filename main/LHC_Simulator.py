@@ -3,7 +3,7 @@ import os
 import pdg
 import shutil
 import random
-from math import exp, sqrt
+from math import *
 import numpy as np
 from collections import defaultdict
 from particle import Particle
@@ -593,6 +593,13 @@ def generate_event(id1, id2, beam_energy, particles_list, resonances, max_attemp
         'L_mu': PARTICLE_VALUES[id1]['L_mu'] + PARTICLE_VALUES[id2]['L_mu'],
         'L_tau': PARTICLE_VALUES[id1]['L_tau'] + PARTICLE_VALUES[id2]['L_tau'],
     }
+
+
+    E1 = sqrt(beam_energy**2 + m1**2)
+    E2 = sqrt(beam_energy**2 + m2**2)
+
+    tracks_count = int(PARTICLE_VALUES[id1]['charge']) + int(PARTICLE_VALUES[id2]['charge'] != 0)
+    momentum = abs(E1 - E2)
     
 
     interaction_type = get_interaction_type(id1, id2)
@@ -635,6 +642,8 @@ def generate_event(id1, id2, beam_energy, particles_list, resonances, max_attemp
                 initial_state['charm']
             ],
             "Charge": initial_state['charge'],
+            "track_count": tracks_count,
+            "momentum": momentum
         }]
         
         print(f"✓ Событие найдено!")
@@ -649,7 +658,10 @@ def generate_event(id1, id2, beam_energy, particles_list, resonances, max_attemp
             "S,B,C": [
                 initial_state['strangeness'],
                 initial_state['bottom'],
-                initial_state['charm'] ], "Charge": initial_state['charge'],
+                initial_state['charm'] ], 
+            "Charge": initial_state['charge'],
+            "track_count": tracks_count,
+            "momentum": momentum
 
             
         }], [{'init_id1': id1, 'init_id2:': id2}]]
