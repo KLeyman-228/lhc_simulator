@@ -640,8 +640,17 @@ def generate_event(id1, id2, beam_energy, particles_list, resonances, max_attemp
         
         return [products], first_products, values
     
-    print(f"❌ Событие не найдено")
-    return None
+    print(f"Рассеяние")
+    return [{"id_1:": id1, "id_2:": id2}], [{"id_1:": id1, "id_2:": id2}], [{
+            "Mass": sqrt_s,
+            "BaryonNum": initial_state['baryon'],
+            "S,B,C": [
+                initial_state['strangeness'],
+                initial_state['bottom'],
+                initial_state['charm']
+            ],
+            "Charge": initial_state['charge'],
+        }]
 
 
     """# ОПТИМИЗАЦИЯ: предфильтруем резонансы по массе
