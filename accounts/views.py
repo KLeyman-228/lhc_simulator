@@ -167,7 +167,7 @@ def run_simulation(request):
     particles_detected = request.data.get('particles_detected', 0)
     energy = request.data.get('energy')
     duration = request.data.get('duration')
-    collision_results = request.data.get('collision_results', [])
+    simulation_results  = request.data.get('simulation_results ', [])
     
     # Расчет очков
     base_points = SIMULATION_POINTS.get(simulation_type, 10)
@@ -185,10 +185,10 @@ def run_simulation(request):
     SimulationLog.objects.create(
         user=user,
         simulation_type=simulation_type,
-        particles_detected=particles_detected,
+        #particles_detected=particles_detected,
         energy=energy,
         duration=duration,
-        collision_results=collision_results
+        simulation_results =simulation_results 
     )
     
     user.refresh_from_db()

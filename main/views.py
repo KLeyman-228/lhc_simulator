@@ -52,7 +52,7 @@ def get_inputs(request):
             simulation_type=simulation_type,
             particles_detected=3,
             energy=energy,
-            collision_results=simulation_results
+            simulation_results =simulation_results
         )
 
     except Exception as e:

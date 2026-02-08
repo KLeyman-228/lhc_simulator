@@ -17,7 +17,7 @@ SIMULATION_POINTS = {
 
 
 def add_simulation_rating(user, simulation_type, particles_detected=0, 
-                         energy=None, duration=None, collision_results=None):
+                         energy=None, duration=None, simulation_results =None):
 
     if isinstance(user, int):
         try:
@@ -47,7 +47,7 @@ def add_simulation_rating(user, simulation_type, particles_detected=0,
         particles_detected=particles_detected,
         energy=energy,
         duration=duration,
-        collision_results=collision_results or []
+        simulation_results =simulation_results  or []
     )
     
     user.refresh_from_db()
