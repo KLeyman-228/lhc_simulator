@@ -618,6 +618,8 @@ def generate_event(id1, id2, beam_energy, particles_list, resonances, max_attemp
         
         # Формируем результат
         products = {f'id_{i+1}': p.mcid for i, p in enumerate(final_products)}
+
+        initial = [{'init_id1': id1, 'init_id2:': id2}]
         
         first_products = [{
             "id_1": first_particle.mcid,
@@ -638,7 +640,7 @@ def generate_event(id1, id2, beam_energy, particles_list, resonances, max_attemp
         print(f"✓ Событие найдено!")
         print(f"   Продукты: {[_particle_cache[p.mcid].name for p in final_products]}")
         
-        return [products], first_products, values
+        return [products], first_products, values, initial
     
     print(f"Рассеяние")
     return [{"id_1:": id1, "id_2:": id2}], [{"id_1:": id1, "id_2:": id2}], [{
@@ -767,12 +769,12 @@ def SimulationEvent(id_1, id_2, beam_energy, particle_list, resonances):
     result = generate_event(id_1, id_2, beam_energy, particle_list, resonances)
     
     if result:
-        event, first_products, values = result
+        event, first_products, values, init = result
         print(f"\n✓ УСПЕХ! Событие сгенерировано")
         print(f"   Продукты реакции: {event}")
         print(f"   Первичные частицы: {first_products}")
         print(f"   Параметры: {values}")
-        return event, first_products, values
+        return event, first_products, values, init
     else:
         print(f"\n✗ НЕУДАЧА: Событие не сгенерировано")
         print(f"   Попробуйте:")

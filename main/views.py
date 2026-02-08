@@ -51,13 +51,14 @@ def get_inputs(request):
             user=request.user,
             simulation_type=simulation_type,
             energy=energy,
-            simulation_results =simulation_results
+            simulation_results=simulation_results
         )
 
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
 
     return JsonResponse(result, safe=False)
+
 
 
 def LoadAll():
@@ -89,7 +90,7 @@ def Collide_Simulation(options):
         raise ValueError("Missing required parameters: id_1, id_2, Energy")
     
     # Симуляция
-    finals, first_finals, values = SimulationEvent(
+    finals, first_finals, values, init = SimulationEvent(
         id_1, id_2, E, particle_list, resonances
     )
     
@@ -97,7 +98,8 @@ def Collide_Simulation(options):
     result = [
         finals,
         first_finals,
-        values
+        values,
+        init
     ]
     
     return result

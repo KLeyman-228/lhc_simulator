@@ -114,6 +114,8 @@ class SimulationLogAdmin(admin.ModelAdmin):
     duration_display.short_description = 'Длительность'
     duration_display.admin_order_field = 'duration'
 
+
+
 """@admin.register(SimulationLog)
 class SimulationLogAdmin(admin.ModelAdmin):
     
