@@ -28,7 +28,7 @@ def add_simulation_rating(user, simulation_type, particles_detected=0,
                 'error': 'Пользователь не найден'
             }
     
-
+    
     base_points = SIMULATION_POINTS.get(simulation_type, 10)
     particle_bonus = min(particles_detected, 10)  # Макс +10 за частицы
     energy_bonus = 5 if energy and energy > 10 else 0  # +5 если энергия > 10 ТэВ

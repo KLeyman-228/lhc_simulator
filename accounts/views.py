@@ -164,15 +164,15 @@ def run_simulation(request):
     """Запустить симуляцию и обновить рейтинг"""
     user = request.user
     simulation_type = request.data.get('simulation_type', 'proton_proton')
-    particles_detected = request.data.get('particles_detected', 0)
+    #particles_detected = request.data.get('particles_detected', 0)
     energy = request.data.get('energy')
     duration = request.data.get('duration')
     simulation_results  = request.data.get('simulation_results ', [])
     
     # Расчет очков
     base_points = SIMULATION_POINTS.get(simulation_type, 10)
-    particle_bonus = min(particles_detected, 10)
-    total_points = base_points + particle_bonus
+    #particle_bonus = min(particles_detected, 10)
+    total_points = base_points
     
     # Обновление рейтинга
     User.objects.filter(pk=user.pk).update(
@@ -185,7 +185,6 @@ def run_simulation(request):
     SimulationLog.objects.create(
         user=user,
         simulation_type=simulation_type,
-        #particles_detected=particles_detected,
         energy=energy,
         duration=duration,
         simulation_results =simulation_results 

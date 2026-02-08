@@ -109,7 +109,6 @@ class SimulationLogSerializer(serializers.ModelSerializer):
             'id',
             'simulation_type',
             'simulation_type_display',
-            'particles_detected',
             'energy',
             'duration',
             'created_at',
