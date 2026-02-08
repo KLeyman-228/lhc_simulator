@@ -83,14 +83,7 @@ def login_view(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_profile(request):
-    """
-    Получить полный профиль текущего пользователя
-    
-    Возвращает:
-    - Информацию о пользователе
-    - Ранг в рейтинге
-    - Статистику
-    """
+
     user = request.user
     
     # Вычисляем ранг
@@ -115,13 +108,8 @@ def get_profile(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_my_simulations(request):
-    """
-    Получить историю симуляций текущего пользователя
-    
-    Query параметры:
-    - limit: количество записей (по умолчанию 10)
-    """
-    limit = int(request.GET.get('limit', 10))
+
+    limit = int(request.GET.get('limit', 15))
     
     simulations = SimulationLog.objects.filter(
         user=request.user
@@ -140,14 +128,7 @@ def get_my_simulations(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_my_stats(request):
-    """
-    Получить полную статистику пользователя
-    
-    Возвращает:
-    - Профиль
-    - Ранг
-    - Последние 10 симуляций
-    """
+
     user = request.user
     
     # Ранг
@@ -177,12 +158,7 @@ def get_my_stats(request):
 
 @api_view(['GET'])
 def get_leaderboard(request):
-    """
-    Получить таблицу лидеров
-    
-    Query параметры:
-    - limit: количество пользователей (по умолчанию 100)
-    """
+
     limit = int(request.GET.get('limit', 100))
     
     users = User.objects.filter(
