@@ -50,9 +50,9 @@ def get_inputs(request):
         rating_update = add_simulation_rating(
             user=request.user,
             simulation_type=simulation_type,
-            particles_detected=simulation_results['count'],
+            particles_detected=3,
             energy=energy,
-            collision_results=simulation_results['collision_data']
+            collision_results=simulation_results
         )
 
     except Exception as e:
