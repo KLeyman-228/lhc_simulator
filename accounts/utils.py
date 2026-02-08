@@ -38,7 +38,7 @@ def add_simulation_rating(user, simulation_type, particles_detected=0,
     User.objects.filter(pk=user.pk).update(
         simulation_count=F('simulation_count') + 1,
         rating_score=F('rating_score') + total_points,
-        last_simulation_at=timezone.now()
+        last_simulation_time=timezone.now()
     )
     
     simulation_log = SimulationLog.objects.create(

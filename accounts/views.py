@@ -157,6 +157,7 @@ SIMULATION_POINTS = {
 }
 
 
+
 @api_view(['POST'])  # ← ДОБАВИЛИ ЭТО!
 @permission_classes([IsAuthenticated])
 def run_simulation(request):
