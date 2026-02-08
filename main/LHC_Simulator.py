@@ -649,10 +649,10 @@ def generate_event(id1, id2, beam_energy, particles_list, resonances, max_attemp
             "S,B,C": [
                 initial_state['strangeness'],
                 initial_state['bottom'],
-                initial_state['charm']
-            ],
-            "Charge": initial_state['charge'],
-        }]
+                initial_state['charm'] ], "Charge": initial_state['charge'],
+
+            
+        }], [{'init_id1': id1, 'init_id2:': id2}]
 
 
     """# ОПТИМИЗАЦИЯ: предфильтруем резонансы по массе

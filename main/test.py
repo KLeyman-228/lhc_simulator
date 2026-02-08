@@ -43,10 +43,20 @@ def Collide_Simulation(options):
     id_2 = options['id_2']
     E = options['Energy']
 
-    finals, first_finals, values, init = SimulationEvent(id_1, id_2, E, particle_list, resonances)
+    finals, first_finals, values, init = SimulationEvent(
+        id_1, id_2, E, particle_list, resonances
+    )
+    
+    # Формируем результат
+    result = [
+        finals,
+        first_finals,
+        values,
+        init
+    ]
 
 
-    Result = [finals, first_finals, values, init]
+    Result = result
     with open('Result.json', 'w', encoding='utf-8') as f:
         json.dump(Result, f, ensure_ascii=False, indent=4)
     
