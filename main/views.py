@@ -50,7 +50,6 @@ def get_inputs(request):
         rating_update = add_simulation_rating(
             user=request.user,
             simulation_type=simulation_type,
-            particles_detected=3,
             energy=energy,
             simulation_results =simulation_results
         )
