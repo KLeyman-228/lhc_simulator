@@ -8,7 +8,6 @@ User = get_user_model()
 
 
 class RegisterSerializer(serializers.ModelSerializer):
-    
     password = serializers.CharField(
         write_only=True, 
         required=True, 
@@ -54,7 +53,6 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    
     rank = serializers.SerializerMethodField()
     
     class Meta:
@@ -80,7 +78,6 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class LeaderboardSerializer(serializers.ModelSerializer):
-    
     class Meta:
         model = User
         fields = [
@@ -93,24 +90,16 @@ class LeaderboardSerializer(serializers.ModelSerializer):
 
 
 class SimulationLogSerializer(serializers.ModelSerializer):
-    
-    simulation_type_display = serializers.CharField(
-        source='get_simulation_type_display', 
-        read_only=True
-    )
-    user_name = serializers.CharField(
-        source='user.username', 
-        read_only=True
-    )
+    user_name = serializers.CharField(source='user.username', read_only=True)
     
     class Meta:
         model = SimulationLog
         fields = [
             'id',
+            'user_name',
             'simulation_type',
-            'simulation_type_display',
             'energy',
             'duration',
-            'created_at',
-            'user_name'
+            'simulation_results',  # ← ДОБАВЛЕНО
+            'created_at'
         ]
