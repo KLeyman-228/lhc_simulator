@@ -75,4 +75,5 @@ class SimulationLog(models.Model):
         ]
     
     def __str__(self):
-        return f"{self.user.username} - {self.get_simulation_type_display()} ({self.created_at.strftime('%d.%m.%Y')})"
+        return f"{self.user.username} - {self.simulation_type} ({self.created_at.strftime('%d.%m.%Y')})"
+        # Убрали get_simulation_type_display() ↑
