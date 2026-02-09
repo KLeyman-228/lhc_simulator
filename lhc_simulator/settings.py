@@ -17,7 +17,6 @@ from dotenv import load_dotenv
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 load_dotenv(BASE_DIR / ".env")
 
 # Quick-start development settings - unsuitable for production
@@ -147,7 +146,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'lhc_simulator.wsgi.application'
 ASGI_APPLICATION = "lhc_simulator.asgi.application"
 
-ACCOUNT_EMAIL_UNIQUE = True
+"""ACCOUNT_EMAIL_UNIQUE = True
 ACCOUNT_EMAIL_CONFIRMATION_REQUIRED = True
 
 EMAIL_HOST = os.environ.get("EMAIL_HOST")
@@ -155,7 +154,7 @@ EMAIL_PORT = int(os.environ.get("EMAIL_PORT", 465))
 EMAIL_USE_SSL = os.environ.get("EMAIL_USE_SSL") == "True"
 EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
-DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL")
+DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL")"""
 
 
 # Database
@@ -246,7 +245,7 @@ AUTH_USER_MODEL = 'accounts.User'
 TELEGRAM_ADMIN_CHAT_ID = int(os.environ.get("TELEGRAM_SUPPORT_CHAT_ID"))  # Ваш ID
 
 TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
-TELEGRAM_SUPPORT_CHAT_ID = int(os.environ.get("TELEGRAM_SUPPORT_CHAT_ID"))
+TELEGRAM_SUPPORT_CHAT_ID = int(os.environ.get("TELEGRAM_SUPPORT_CHAT_ID", "0"))
 
 #SITE_BASE_URL = os.environ.get("SITE_BASE_URL")
 
