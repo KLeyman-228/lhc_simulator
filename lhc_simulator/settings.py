@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'main',
     'accounts',
 
+    'channels',
+
     'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
