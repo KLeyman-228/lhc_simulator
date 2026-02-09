@@ -293,6 +293,8 @@ def logout_view(request):
         'message': 'Выход выполнен успешно'
     })
 
+
+
 @csrf_exempt
 async def telegram_webhook(request):
     if request.method != "POST":
