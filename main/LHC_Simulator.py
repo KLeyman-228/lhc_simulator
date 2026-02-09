@@ -632,6 +632,7 @@ def generate_event(id1, id2, beam_energy, particles_list, resonances, max_attemp
             "id_1": first_particle.mcid,
             "id_2": second_particle.mcid
         }]
+
         
         values = [{
             "Mass": sqrt_s,
@@ -642,8 +643,10 @@ def generate_event(id1, id2, beam_energy, particles_list, resonances, max_attemp
                 initial_state['charm']
             ],
             "Charge": initial_state['charge'],
+            
             "track_count": tracks_count,
-            "momentum": momentum
+            "momentum": momentum,
+            "type": interaction_type
         }]
         
         print(f"✓ Событие найдено!")
@@ -660,8 +663,10 @@ def generate_event(id1, id2, beam_energy, particles_list, resonances, max_attemp
                 initial_state['bottom'],
                 initial_state['charm'] ], 
             "Charge": initial_state['charge'],
+
             "track_count": tracks_count,
-            "momentum": momentum
+            "momentum": momentum,
+            "type": interaction_type
 
             
         }], [{'init_id1': id1, 'init_id2:': id2}]]
