@@ -12,19 +12,22 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
+load_dotenv(BASE_DIR / ".env")
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-2=-=bbe_ib0o^l7nau6zlui-e(*l++w0e&0ba&17z78*atn0rx'
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = os.environ.get("DEBUG")
 
 ALLOWED_HOSTS = [
     "lhc-simulator.ru",
@@ -147,13 +150,12 @@ ASGI_APPLICATION = "lhc_simulator.asgi.application"
 ACCOUNT_EMAIL_UNIQUE = True
 ACCOUNT_EMAIL_CONFIRMATION_REQUIRED = True
 
-DEFAULT_FROM_EMAIL = 'lhc-simulator@yandex.ru'
-EMAIL_HOST = "smtp.yandex.ru"
-EMAIL_PORT = 465
-EMAIL_USE_TLS = False
-EMAIL_USE_SSL = True
-EMAIL_HOST_USER = "LHC_AUTH_EMAIL"
-EMAIL_HOST_PASSWORD = "cfzsbeteqsmvzoky"
+EMAIL_HOST = os.environ.get("EMAIL_HOST")
+EMAIL_PORT = int(os.environ.get("EMAIL_PORT", 465))
+EMAIL_USE_SSL = os.environ.get("EMAIL_USE_SSL") == "True"
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
+DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL")
 
 
 # Database
@@ -162,7 +164,7 @@ EMAIL_HOST_PASSWORD = "cfzsbeteqsmvzoky"
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': '/opt/db/db.sqlite3',
+        "NAME": os.environ.get("DATABASE_PATH"),
     }
 }
 
@@ -240,11 +242,11 @@ SITE_BASE_URL="https://lhc-simulator.ru"
 # Кастомная модель User
 AUTH_USER_MODEL = 'accounts.User'
 
-TELEGRAM_BOT_TOKEN = "7956705259:AAFe58uEuFn8ntNj_1nGv3ChlYewn3ZKJtk"  # Ваш токен
-TELEGRAM_ADMIN_CHAT_ID = -1003823835366  # Ваш ID
+#TELEGRAM_BOT_TOKEN = "7956705259:AAFe58uEuFn8ntNj_1nGv3ChlYewn3ZKJtk"  # Ваш токен
+TELEGRAM_ADMIN_CHAT_ID = int(os.environ.get("TELEGRAM_SUPPORT_CHAT_ID"))  # Ваш ID
 
-TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "7956705259:AAFe58uEuFn8ntNj_1nGv3ChlYewn3ZKJtk")
-TELEGRAM_SUPPORT_CHAT_ID = int(os.environ.get("TELEGRAM_SUPPORT_CHAT_ID", "-1003823835366"))
+TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
+TELEGRAM_SUPPORT_CHAT_ID = int(os.environ.get("TELEGRAM_SUPPORT_CHAT_ID"))
 
-SITE_BASE_URL = os.environ.get("SITE_BASE_URL", "https://lhc-simulator.ru")
+SITE_BASE_URL = os.environ.get("SITE_BASE_URL")
 
