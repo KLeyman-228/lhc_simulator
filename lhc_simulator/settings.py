@@ -17,7 +17,7 @@ from dotenv import load_dotenv
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-load_dotenv(BASE_DIR / ".env")
+load_dotenv("/opt/collider-backend/lhc_simulator/.env")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -244,7 +244,7 @@ AUTH_USER_MODEL = 'accounts.User'
 #TELEGRAM_BOT_TOKEN = "7956705259:AAFe58uEuFn8ntNj_1nGv3ChlYewn3ZKJtk"  # Ваш токен
 TELEGRAM_ADMIN_CHAT_ID = int(os.environ.get("TELEGRAM_SUPPORT_CHAT_ID"))  # Ваш ID
 
-TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
+TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
 TELEGRAM_SUPPORT_CHAT_ID = int(os.environ.get("TELEGRAM_SUPPORT_CHAT_ID", "0"))
 
 #SITE_BASE_URL = os.environ.get("SITE_BASE_URL")
