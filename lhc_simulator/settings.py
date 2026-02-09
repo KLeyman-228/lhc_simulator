@@ -242,4 +242,8 @@ AUTH_USER_MODEL = 'accounts.User'
 
 TELEGRAM_BOT_TOKEN = "7956705259:AAFe58uEuFn8ntNj_1nGv3ChlYewn3ZKJtk"  # Ваш токен
 TELEGRAM_ADMIN_CHAT_ID = -1003823835366  # Ваш ID
-TELEGRAM_SECRET = "secret_key_12345"  # Любой секретный ключ
+
+TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "7956705259:AAFe58uEuFn8ntNj_1nGv3ChlYewn3ZKJtk")
+TELEGRAM_SUPPORT_CHAT_ID = int(os.environ.get("TELEGRAM_SUPPORT_CHAT_ID", "-1003823835366"))
+
+SITE_BASE_URL = os.environ.get("SITE_BASE_URL", "https://lhc-simulator.ru")

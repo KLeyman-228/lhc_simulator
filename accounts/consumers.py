@@ -1,11 +1,11 @@
 import json
 import time
-from channels.generic.websocket import AsyncWebSocketConsumer
+from channels.generic.websocket import AsyncWebsocketConsumer
 from . import memory_store as store
 from . import telegram_service as tg
 
 
-class SupportConsumer(AsyncWebSocketConsumer):
+class SupportConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
         self.session_id = self.scope["url_route"]["kwargs"]["session_id"]

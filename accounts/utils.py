@@ -27,7 +27,8 @@ def add_simulation_rating(user, simulation_type,
                 'success': False,
                 'error': 'Пользователь не найден'
             }
-    
+
+
 
     base_points = SIMULATION_POINTS.get(simulation_type, 10)
     energy_bonus = 5 if energy and energy > 10 else 0  # +5 если энергия > 10 ТэВ
