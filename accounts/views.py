@@ -9,7 +9,7 @@ from django.utils import timezone
 from django.contrib.auth import authenticate, get_user_model
 
 import json
-
+import pprint
 from django.http import JsonResponse, HttpResponse
 
 from django.views.decorators.csrf import csrf_exempt
@@ -293,7 +293,6 @@ def logout_view(request):
         'message': 'Выход выполнен успешно'
     })
 
-
 @csrf_exempt
 async def telegram_webhook(request):
     if request.method != "POST":
@@ -302,15 +301,29 @@ async def telegram_webhook(request):
     try:
         payload = json.loads(request.body)
     except json.JSONDecodeError:
-        return HttpResponse(status=400)
+        return JsonResponse({"ok": True})
+
+    # ❌ channel_post полностью игнорируем (часто именно так прилетает эхо)
+    if "channel_post" in payload:
+        return JsonResponse({"ok": True})
 
     message = payload.get("message", {})
+    if not message:
+        return JsonResponse({"ok": True})
+
     topic_id = message.get("message_thread_id")
     text = message.get("text", "")
+    sender = message.get("from")
 
-    if message.get("from", {}).get("is_bot", False):
+    if not topic_id or not text or not sender:
         return JsonResponse({"ok": True})
-    if not topic_id or not text:
+
+    # ❌ игнорируем любые сообщения от бота
+    if sender.get("is_bot", False):
+        return JsonResponse({"ok": True})
+
+    # ❌ игнорируем эхо сообщений, которые пришли с сайта
+    if text.startswith("[WEB]"):
         return JsonResponse({"ok": True})
 
     session = store.get_session_by_topic(topic_id)
@@ -329,4 +342,3 @@ async def telegram_webhook(request):
         })
 
     return JsonResponse({"ok": True})
-

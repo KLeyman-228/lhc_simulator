@@ -247,3 +247,4 @@ TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "7956705259:AAFe58uEuF
 TELEGRAM_SUPPORT_CHAT_ID = int(os.environ.get("TELEGRAM_SUPPORT_CHAT_ID", "-1003823835366"))
 
 SITE_BASE_URL = os.environ.get("SITE_BASE_URL", "https://lhc-simulator.ru")
+
