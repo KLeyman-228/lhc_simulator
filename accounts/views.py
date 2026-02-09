@@ -8,6 +8,18 @@ from django.db.models import F
 from django.utils import timezone
 from django.contrib.auth import authenticate, get_user_model
 
+import json
+
+from django.http import JsonResponse, HttpResponse
+
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+
+from django.conf import settings as conf
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+from . import memory_store as store
+
 from .serializers import (
     RegisterSerializer, 
     UserSerializer, 
@@ -280,3 +292,41 @@ def logout_view(request):
         'success': True,
         'message': 'Выход выполнен успешно'
     })
+
+
+@csrf_exempt
+async def telegram_webhook(request):
+    if request.method != "POST":
+        return HttpResponse(status=405)
+
+    try:
+        payload = json.loads(request.body)
+    except json.JSONDecodeError:
+        return HttpResponse(status=400)
+
+    message = payload.get("message", {})
+    topic_id = message.get("message_thread_id")
+    text = message.get("text", "")
+
+    if message.get("from", {}).get("is_bot", False):
+        return JsonResponse({"ok": True})
+    if not topic_id or not text:
+        return JsonResponse({"ok": True})
+
+    session = store.get_session_by_topic(topic_id)
+    if not session:
+        return JsonResponse({"ok": True})
+
+    msg = store.add_message(session.session_id, "support", text)
+
+    channel_name = store.get_channel(session.session_id)
+    if channel_name:
+        channel_layer = get_channel_layer()
+        await channel_layer.send(channel_name, {
+            "type": "support.message",
+            "text": text,
+            "timestamp": msg["timestamp"],
+        })
+
+    return JsonResponse({"ok": True})
+

@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import signup_view, logout_view, login_view, get_my_stats, get_leaderboard, get_my_simulations, update_profile, get_profile
+from .views import signup_view, logout_view, login_view, get_my_stats, get_leaderboard, get_my_simulations, update_profile, get_profile, telegram_webhook
 from rest_framework_simplejwt.views import TokenRefreshView
 
 urlpatterns = [
@@ -18,4 +18,6 @@ urlpatterns = [
     # Статистика и рейтинг
     path('stats/', get_my_stats, name='my_stats'),  # Полная статистика
     path('leaderboard/', get_leaderboard, name='leaderboard'),  # Таблица лидеров
+
+    path('support/webhook/telegram/', telegram_webhook),
 ]

@@ -38,8 +38,11 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
+    "daphne",  
+
     'main',
     'accounts',
+
     'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -139,6 +142,7 @@ TEMPLATES = [
 
 
 WSGI_APPLICATION = 'lhc_simulator.wsgi.application'
+ASGI_APPLICATION = "lhc_simulator.asgi.application"
 
 ACCOUNT_EMAIL_UNIQUE = True
 ACCOUNT_EMAIL_CONFIRMATION_REQUIRED = True
@@ -160,6 +164,12 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
+}
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    },
 }
 
 
@@ -225,5 +235,11 @@ CSRF_TRUSTED_ORIGINS = [
     "https://www.lhc-simulator.ru",
 ]
 
+SITE_BASE_URL="https://lhc-simulator.ru"
+
 # Кастомная модель User
 AUTH_USER_MODEL = 'accounts.User'
+
+TELEGRAM_BOT_TOKEN = "7956705259:AAFe58uEuFn8ntNj_1nGv3ChlYewn3ZKJtk"  # Ваш токен
+TELEGRAM_ADMIN_CHAT_ID = -1003823835366  # Ваш ID
+TELEGRAM_SECRET = "secret_key_12345"  # Любой секретный ключ
