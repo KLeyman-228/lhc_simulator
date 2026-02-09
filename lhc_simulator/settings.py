@@ -248,5 +248,5 @@ TELEGRAM_ADMIN_CHAT_ID = int(os.environ.get("TELEGRAM_SUPPORT_CHAT_ID"))  # Ва
 TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
 TELEGRAM_SUPPORT_CHAT_ID = int(os.environ.get("TELEGRAM_SUPPORT_CHAT_ID"))
 
-SITE_BASE_URL = os.environ.get("SITE_BASE_URL")
+#SITE_BASE_URL = os.environ.get("SITE_BASE_URL")
 
