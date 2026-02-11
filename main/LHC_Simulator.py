@@ -148,6 +148,42 @@ def get_quark_number(mcid, quark):
         return count
     except:
         return 0
+    
+@lru_cache(maxsize=1000)
+def GetAnimationType(info): # info = [A, B, C, D]
+
+    types = []
+    names = []
+    IType = ''
+
+    for i in info:
+        p = PARTICLE_VALUES[i]['type']
+        if PARTICLE_VALUES[i]['Name'] is not None:
+            n = PARTICLE_VALUES[i]['Name']
+        types.append(p)
+        names.append(n)
+
+    if "lepton" in types:
+        IType = "Muon Event"
+    if "Higgs" in names:
+        IType = "Higgs Boson"
+    if "W" in names:
+        IType = "W/Z Boson"
+    if all(x in {"meson", "baryon"} for x in types):
+        IType = "Jet Event"
+    else:
+        IType = "Standard"
+    
+    return IType
+
+    
+
+        
+
+
+
+            
+
 
 
 # ============================================================================
@@ -191,6 +227,8 @@ def load_particles():
 
                 lepton_nums = get_lepton_numbers(particle.mcid)
 
+                name = particle.name if hasattr(particle, "name") else None
+
                 PARTICLE_VALUES[particle.mcid] = {
                         "mass": safe_mass(particle),
                         "charge": safe_charge(particle),
@@ -203,7 +241,8 @@ def load_particles():
                         "L_mu": lepton_nums['mu'],
                         "L_tau": lepton_nums['tau'],
 
-                        "type": Type
+                        "type": Type,
+                        "Name": name
                     }
                 
                 # Разделяем на частицы и резонансы
@@ -633,6 +672,7 @@ def generate_event(id1, id2, beam_energy, particles_list, resonances, max_attemp
             "id_2": second_particle.mcid
         }]
 
+        AnimType = GetAnimationType(p.mcid for p in final_products)
         
         values = [{
             "Mass": sqrt_s,
@@ -646,11 +686,12 @@ def generate_event(id1, id2, beam_energy, particles_list, resonances, max_attemp
             
             "track_count": tracks_count,
             "momentum": momentum,
-            "type": interaction_type
+            "type": AnimType
         }]
         
         print(f"✓ Событие найдено!")
         print(f"   Продукты: {[_particle_cache[p.mcid].name for p in final_products]}")
+        print(AnimType)
         
         return [products], first_products, values, initial
     
@@ -666,7 +707,7 @@ def generate_event(id1, id2, beam_energy, particles_list, resonances, max_attemp
 
             "track_count": tracks_count,
             "momentum": momentum,
-            "type": interaction_type
+            "type": AnimType
 
             
         }], [{'init_id1': id1, 'init_id2:': id2}]]

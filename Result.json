@@ -9,7 +9,7 @@
     [
         {
             "id_1": 2212,
-            "id_2": 22124
+            "id_2": 2128
         }
     ],
     [
@@ -24,7 +24,7 @@
             "Charge": 2.0,
             "track_count": 2,
             "momentum": 0.0,
-            "type": "hadron-hadron"
+            "type": "Standard"
         }
     ],
     [
