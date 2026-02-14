@@ -163,13 +163,13 @@ def GetAnimationType(info): # info = [A, B, C, D]
         types.append(p)
         names.append(n)
 
-    if "lepton" in types:
+    if all(x in "lepton" for x in types):
         IType = "Muon Event"
     if "Higgs" in names:
         IType = "Higgs Boson"
     if "W" in names:
         IType = "W/Z Boson"
-    if all(x in {"meson", "baryon"} for x in types):
+    if all(x in {"meson", "baryon", "hadron"} for x in types):
         IType = "Jet Event"
     else:
         IType = "Standard"
