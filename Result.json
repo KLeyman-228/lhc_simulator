@@ -1,36 +1,35 @@
 [
     [
         {
-            "id_1": 2212,
-            "id_2": 22,
-            "id_3": 2212
+            "id_1": 11,
+            "id_2": 11
         }
     ],
     [
         {
-            "id_1": 2212,
-            "id_2": 2128
+            "id_1": 11,
+            "id_2": 11
         }
     ],
     [
         {
-            "Mass": 11.537712137388429,
-            "BaryonNum": 2.0,
+            "Mass": 0.31622776601683794,
+            "BaryonNum": 0.0,
             "S,B,C": [
                 0,
                 0,
                 0
             ],
-            "Charge": 2.0,
-            "track_count": 2,
+            "Charge": -2.0,
+            "track_count": 0,
             "momentum": 0.0,
             "type": "Standard"
         }
     ],
     [
         {
-            "init_id1": 2212,
-            "init_id2:": 2212
+            "init_id1": 11,
+            "init_id2:": 11
         }
     ]
 ]
