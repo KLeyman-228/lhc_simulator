@@ -611,6 +611,8 @@ def generate_lepton_lepton_event(id1, id2, sqrt_s, initial_state, particles_all,
     return None
 
 
+
+
 def generate_event(id1, id2, beam_energy, particles_list, resonances, max_attempts=100000):
     
     if not particles_list or not resonances:
@@ -645,6 +647,42 @@ def generate_event(id1, id2, beam_energy, particles_list, resonances, max_attemp
 
     AnimType = "Standard"
 
+    default = [
+    [
+        {
+            "id_1": id1,
+            "id_2": id2
+        }
+    ],
+    [
+        {
+            "id_1": id1,
+            "id_2": id2
+        }
+    ],
+    [
+        {
+            "Mass": sqrt_s,
+            "BaryonNum": initial_state['baryon'],
+            "S,B,C": [
+                initial_state['strangeness'],
+                initial_state['bottom'],
+                initial_state['charm'] ], 
+            "Charge": initial_state['charge'],
+
+            "track_count": tracks_count,
+            "momentum": momentum,
+            "type": AnimType
+        }
+    ],
+    [
+        {
+            "init_id1": id1,
+            "init_id2:": id2
+        }
+    ]
+]
+
     if interaction_type == 'hadron-hadron':
         result = generate_hadron_hadron_event(id1, id2, sqrt_s, initial_state, particles_list, resonances)
     
@@ -659,21 +697,7 @@ def generate_event(id1, id2, beam_energy, particles_list, resonances, max_attemp
     
     else:
         print(f"   ⚠️ Тип взаимодействия {interaction_type} пока не реализован")
-        return [[{"id_1:": id1, "id_2:": id2}], [{"id_1:": id1, "id_2:": id2}], [{
-            "Mass": sqrt_s,
-            "BaryonNum": initial_state['baryon'],
-            "S,B,C": [
-                initial_state['strangeness'],
-                initial_state['bottom'],
-                initial_state['charm'] ], 
-            "Charge": initial_state['charge'],
-
-            "track_count": tracks_count,
-            "momentum": momentum,
-            "type": AnimType
-
-            
-        }], [{'init_id1': id1, 'init_id2:': id2}]]
+        return default
     
     if result:
         final_products, first_particle, second_particle = result
@@ -712,21 +736,7 @@ def generate_event(id1, id2, beam_energy, particles_list, resonances, max_attemp
         return [products], first_products, values, initial
     
     print(f"Рассеяние")
-    return [[{"id_1:": id1, "id_2:": id2}], [{"id_1:": id1, "id_2:": id2}], [{
-            "Mass": sqrt_s,
-            "BaryonNum": initial_state['baryon'],
-            "S,B,C": [
-                initial_state['strangeness'],
-                initial_state['bottom'],
-                initial_state['charm'] ], 
-            "Charge": initial_state['charge'],
-
-            "track_count": tracks_count,
-            "momentum": momentum,
-            "type": AnimType
-
-            
-        }], [{'init_id1': id1, 'init_id2:': id2}]]
+    return default
 
 
     """# ОПТИМИЗАЦИЯ: предфильтруем резонансы по массе
