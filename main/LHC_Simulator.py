@@ -643,6 +643,8 @@ def generate_event(id1, id2, beam_energy, particles_list, resonances, max_attemp
     
     interaction_type = get_interaction_type(id1, id2)
 
+    AnimType = "Standard"
+
     if interaction_type == 'hadron-hadron':
         result = generate_hadron_hadron_event(id1, id2, sqrt_s, initial_state, particles_list, resonances)
     
