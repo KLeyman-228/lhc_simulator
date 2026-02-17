@@ -155,13 +155,15 @@ def GetAnimationType(info): # info = [A, B, C, D]
     types = []
     names = []
     IType = ''
-
-    for i in info:
-        p = PARTICLE_VALUES[i]['type']
-        if PARTICLE_VALUES[i]['Name'] is not None:
-            n = PARTICLE_VALUES[i]['Name']
-        types.append(p)
-        names.append(n)
+    try:
+        for i in info:
+            p = PARTICLE_VALUES[i]['type']
+            if PARTICLE_VALUES[i]['Name'] is not None:
+                n = PARTICLE_VALUES[i]['Name']
+            types.append(p)
+            names.append(n)
+    except:
+        return "Standard"
 
     print(names)
     print('\n',types)
