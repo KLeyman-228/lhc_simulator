@@ -611,14 +611,10 @@ def generate_lepton_lepton_event(id1, id2, sqrt_s, initial_state, particles_all,
 
 def generate_event(id1, id2, beam_energy, particles_list, resonances, max_attempts=100000):
     
-    # ИСПРАВЛЕНИЕ: проверка входных данных
     if not particles_list or not resonances:
         print("❌ ОШИБКА: Пустые списки частиц или резонансов")
         return None
     
-    #A = api.get_particle_by_mcid(id1)
-    #B = api.get_particle_by_mcid(id2)
-    # Вычисляем энергию центра масс
     m1 = PARTICLE_VALUES[id1]['mass']
     m2 = PARTICLE_VALUES[id2]['mass']
     s = m1**2 + m2**2 + 2 * m2 * beam_energy
@@ -643,7 +639,6 @@ def generate_event(id1, id2, beam_energy, particles_list, resonances, max_attemp
     tracks_count = int(PARTICLE_VALUES[id1]['charge']) + int(PARTICLE_VALUES[id2]['charge'] != 0)
     momentum = abs(E1 - E2)
     
-
     interaction_type = get_interaction_type(id1, id2)
 
     if interaction_type == 'hadron-hadron':
@@ -660,7 +655,21 @@ def generate_event(id1, id2, beam_energy, particles_list, resonances, max_attemp
     
     else:
         print(f"   ⚠️ Тип взаимодействия {interaction_type} пока не реализован")
-        return None
+        return [[{"id_1:": id1, "id_2:": id2}], [{"id_1:": id1, "id_2:": id2}], [{
+            "Mass": sqrt_s,
+            "BaryonNum": initial_state['baryon'],
+            "S,B,C": [
+                initial_state['strangeness'],
+                initial_state['bottom'],
+                initial_state['charm'] ], 
+            "Charge": initial_state['charge'],
+
+            "track_count": tracks_count,
+            "momentum": momentum,
+            "type": AnimType
+
+            
+        }], [{'init_id1': id1, 'init_id2:': id2}]]
     
     if result:
         final_products, first_particle, second_particle = result

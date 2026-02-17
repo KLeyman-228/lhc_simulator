@@ -14,6 +14,7 @@ test_json = json.dumps([
 ])
 
 
+
 def get_inputs(request):
     global Received_particles
 
