@@ -31,7 +31,7 @@ DEBUG = False
 ALLOWED_HOSTS = [
     "lhc-simulator.ru",
     "www.lhc-simulator.ru",
-    "45.131.186.116",
+    "176.109.104.113",
     "localhost",
     "127.0.0.1",
 ]
@@ -124,7 +124,7 @@ CORS_ALLOW_HEADERS = [
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # React/Vue dev server
     "http://localhost:8080",  # Альтернативный порт
-    "http://45.131.186.116",
+    "http://176.109.104.113",
     "https://lhc-simulator.ru",
     "https://www.lhc-simulator.ru",
 ]
